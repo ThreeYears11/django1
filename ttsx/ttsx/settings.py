@@ -39,7 +39,7 @@ INSTALLED_APPS = (
     'tt_user',
     'tt_cart',
     'tt_order',
-    )
+)
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
