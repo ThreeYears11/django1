@@ -1,15 +1,18 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .models import *
-from .models import OrderInfo
+# from .models import *
+from .models import OrderInfo, OrderDetailInfo
 
 
 # Create your views here.
 def place_order(request):
-    # id = 1
-    # order = OrderInfo.objects.get(user_id=1)
-    # content = {'user': order}
-    return render(request, "tt_order/place_order.html")
+    get = request.GET
+    id = get.get('id')
+    goods = OrderDetailInfo.objects.all()
+    order = OrderInfo.objects.get(pk=1)
+    phone = order.user.useraddressinfo_set.all()[0]
+    content = {'user': order, 'phone': phone, 'goods': goods}
+    return render(request, "tt_order/place_order.html", content)
 
 
 def order_add(request):
