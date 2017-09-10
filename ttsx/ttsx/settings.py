@@ -38,7 +38,7 @@ INSTALLED_APPS = (
     'tt_user',
     'tt_cart',
     'tt_order',
-    "tt_goods",
+    'tt_goods',
 
 )
 
