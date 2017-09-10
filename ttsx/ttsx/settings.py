@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'tt_cart',
+    'tt_order',
 )
 
 MIDDLEWARE_CLASSES = (
