@@ -18,9 +18,6 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-<<<<<<< HEAD
     url(r'^order', include('tt_order.urls')),
-=======
     url()
->>>>>>> xietao
 ]
