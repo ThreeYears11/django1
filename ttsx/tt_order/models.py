@@ -8,7 +8,7 @@ class OrderInfo(models.Model):
     odate = models.DateTimeField(auto_now_add=True)
     oIsPay = models.BooleanField(default=False)
     ototal = models.DecimalField(max_digits=5, decimal_places=2)
-    oaddress = models.ForeignKey(max_length=150)
+    oaddress = models.CharField(max_length=150)
 
 
 class OrderDetailInfo(models.Model):
