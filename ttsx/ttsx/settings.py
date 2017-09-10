@@ -37,11 +37,9 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-<<<<<<< HEAD
     'tt_user',
-=======
     'tt_cart',
->>>>>>> 202c12a85ffe2d951d9c2269f3aa63c5de539514
+    'tt_order',
 )
 
 MIDDLEWARE_CLASSES = (
