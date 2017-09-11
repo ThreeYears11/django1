@@ -1,24 +1,54 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 # from .models import *
+from tt_goods.models import GoodsInfo
+from tt_user.models import *
 from .models import OrderInfo, OrderDetailInfo
+import time
 
 
 # Create your views here.
 def place_order(request):
-    get = request.GET
-    id = get.get('id')
-    goods = OrderDetailInfo.objects.all()
-    order = OrderInfo.objects.get(pk=id)
+    id = request.GET.get('id')
+    order = OrderInfo.objects.get(oid=id)
+    goods = order.orderdetailinfo_set.all()
     phone = order.user.useraddressinfo_set.all()[0]
-    content = {'user': order, 'phone': phone, 'goods': goods}
+    content = {'user': order, 'phone': phone, 'goods': goods, 'oid': id}
     return render(request, "tt_order/place_order.html", content)
 
 
 def order_add(request):
+    uid = 1
+    gid = request.POST.get('goodsid')
+    count = request.POST.get('count')
+    addr = UserAddressInfo.objects.get(user_id=uid)
     a = OrderInfo()
-    a.user_id = 1
-    a.ototal = '123.11'
-    a.oaddress = 'adffaf'
+    dt = time.time()
+    time_local = time.localtime(dt)
+    dt = time.strftime("%Y%m%d%H%M%S", time_local)
+    a.oid = str(dt) + str(uid)
+    a.user = UserInfo.objects.get(id=uid)
+    a.ototal = "0"
+    a.oaddress = addr.uaddress
     a.save()
+    gid = gid.split(',')
+    gid.remove('')
+    for g in gid:
+        b = OrderDetailInfo()
+        b.goods = GoodsInfo.objects.get(id=g)
+        b.order = OrderInfo.objects.get(oid=a.oid)
+        b.price = GoodsInfo.objects.get(id=g).gprice
+        b.count = count
+        b.save()
+    return JsonResponse({'oid': a.oid})
+
+
+def submit(request):
+    print('1')
+    oid = request.POST.get('oid')
+    print(oid)
+    order = OrderInfo.objects.get(oid=oid)
+    order.oIsPay = 1
+    order.save()
+    print('111')
     return HttpResponse('ok')

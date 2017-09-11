@@ -7,6 +7,7 @@
     <script type="text/javascript">
         $('#order_btn').click(function () {
             localStorage.setItem('order_finish', 2);
+
             $('.popup_con').fadeIn('fast', function () {
                 setTimeout(function () {
                     $('.popup_con').fadeOut('fast', function () {
@@ -16,19 +17,23 @@
             });
         });
         $(function () {
+            $('#order_btn').click(function () {
+                console.log('1');
+                $.post("/order/submit/", {'oid': {{ oid }}});
+            });
             var x = 1;
             var y = 0;
             $('#price ul').each(function (i, j) {
                 console.log(j);
                 var a = $(j).children('.col05').html();
                 var b = $(j).children('.col06').html();
-                $(j).children('.col07').html(a * b);
+                $(j).children('.col07').html((a * b).toFixed());
                 y += a * b;
             });
             {#            x = parseFloat(x.toFixed(2));#}
-            $('.total_goods_count').html("共<em>" + x + "</em>件商品，总金额<b>" + y + "元</b>");
+            $('.total_goods_count').html("共<em>" + x.toFixed(2) + "</em>件商品，总金额<b>" + y.toFixed(2) + "元</b>");
             y += 10;
-            $('.total_pay').html("实付款：<b>" + y + "元</b>");
+            $('.total_pay').html("实付款：<b>" + y.toFixed(2) + "元</b>");
         })
     </script>
 {% endblock head %}

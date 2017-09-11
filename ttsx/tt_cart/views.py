@@ -28,3 +28,6 @@ def add(request):
     cart.count += int(add)
     cart.save()
     return redirect('/cart/123456/')
+
+
+

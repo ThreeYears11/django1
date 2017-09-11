@@ -38,15 +38,8 @@ INSTALLED_APPS = (
     'tt_user',
     'tt_cart',
     'tt_order',
-<<<<<<< HEAD
     "tt_goods",
 )
-=======
-    'tt_goods',
-
-)
-
->>>>>>> dev
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
