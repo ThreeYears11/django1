@@ -1,5 +1,6 @@
 from django.db import models
 
+
 # Create your models here.
 class UserInfo(models.Model):
     uname = models.CharField(max_length=20)
@@ -7,6 +8,7 @@ class UserInfo(models.Model):
     uemail = models.CharField(max_length=30)
     isValid = models.BooleanField(default=True)
     isActive = models.BooleanField(default=False)
+
 
 class UserAddressInfo(models.Model):
     uname = models.CharField(max_length=20)

@@ -38,8 +38,12 @@ INSTALLED_APPS = (
     'tt_user',
     'tt_cart',
     'tt_order',
+<<<<<<< HEAD
     "tt_goods",
     )
+=======
+)
+>>>>>>> frank
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -83,7 +87,7 @@ DATABASES = {
         'HOST': 'localhost',
         'PORT': '3306',
         'USER': 'root',
-        'PASSWORD': 'mysql',
+        'PASSWORD': '',
     }
 }
 
