@@ -38,12 +38,8 @@ INSTALLED_APPS = (
     'tt_user',
     'tt_cart',
     'tt_order',
-<<<<<<< HEAD
     "tt_goods",
-    )
-=======
 )
->>>>>>> frank
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -112,4 +108,4 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media')
-#MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media')
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media')
