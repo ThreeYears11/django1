@@ -26,7 +26,7 @@ html, body {
 }
 
 .login_info {
-    /*display: none;*/
+    display: none;
 }
 
 .login_info em {

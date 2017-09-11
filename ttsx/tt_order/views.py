@@ -9,7 +9,7 @@ def place_order(request):
     get = request.GET
     id = get.get('id')
     goods = OrderDetailInfo.objects.all()
-    order = OrderInfo.objects.get(pk=1)
+    order = OrderInfo.objects.get(pk=id)
     phone = order.user.useraddressinfo_set.all()[0]
     content = {'user': order, 'phone': phone, 'goods': goods}
     return render(request, "tt_order/place_order.html", content)
