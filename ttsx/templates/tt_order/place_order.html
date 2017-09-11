@@ -17,12 +17,12 @@
             });
         });
         $(function () {
+            var y = 0;
             $('#order_btn').click(function () {
                 console.log('1');
-                $.post("/order/submit/", {'oid': {{ oid }}});
+                $.post("/order/submit/", {'oid': {{ oid }}, 'ototal': y.toFixed(2)});
             });
             var x = 1;
-            var y = 0;
             $('#price ul').each(function (i, j) {
                 console.log(j);
                 var a = $(j).children('.col05').html();

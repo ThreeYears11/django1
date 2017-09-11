@@ -28,7 +28,7 @@ def order_add(request):
     dt = time.strftime("%Y%m%d%H%M%S", time_local)
     a.oid = str(dt) + str(uid)
     a.user = UserInfo.objects.get(id=uid)
-    a.ototal = "0"
+    a.ototal = 0
     a.oaddress = addr.uaddress
     a.save()
     gid = gid.split(',')
@@ -44,11 +44,12 @@ def order_add(request):
 
 
 def submit(request):
-    print('1')
     oid = request.POST.get('oid')
-    print(oid)
+    ototal = request.POST.get('ototal')
+    print(float(ototal))
     order = OrderInfo.objects.get(oid=oid)
     order.oIsPay = 1
+    order.ototal = ototal
     order.save()
     print('111')
     return HttpResponse('ok')
