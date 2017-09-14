@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% block title %}
+	<title>天天生鲜-注册</title>
+{% endblock title%}
+
+{% block head %}
+	<script type="text/javascript" src="/static/js/register.js"></script>
+    <script>
+        $(function () {
+            $('.img').css('cursor','pointer').click(function () {
+                $('#img').prop('src',$('#img').prop('src')+1)
+            });
+
+            var sub = true;
+            var num = 1;
+            $('#user_name').blur(function () {
+                var name = $('#user_name').val();
+                $.get('/user/check_user/',{'user_name':name},function (data) {
+                    if(data.check=='yes'){
+                        $('#user_name').next().html('用户名已存在');
+			            $('#user_name').next().show();
+			            sub = false;
+                    }
+               });
+            });
+
+            $('#email').blur(function () {
+                var email = $('#email').val();
+                $.get('/user/check_email/',{'email':email},function (data) {
+                    if(data.check=='yes'){
+                        $('#email').next().html('邮箱已存在');
+			            $('#email').next().show();
+			            num = 0;
+                    }
+
+                });
+            });
+            $('#submit').click(function () {
+                if(sub==false){
+                    $('.myform').submit(function () {
+                    $('#user_name').next().html('用户名已存在');
+                    $('#user_name').next().show();
+{#                    $('#pwd').val('');#}
+{#                    $('#cpwd').val('');#}
+{#                    $('#email').val('');#}
+                    return false;
+                });
+                }
+                if(num==0){
+                    $('.myform').submit(function () {
+                    $('#email').next().html('邮箱已存在');
+                    $('#email').next().show();
+{#                    $('#pwd').val('');#}
+{#                    $('#cpwd').val('');#}
+{#                    $('#user_name').val('');#}
+                    return false;
+                });
+                }
+
+            });
+
+
+
+        })
+    </script>
+{% endblock head%}
+
+
+{% block body %}
+	<div class="register_con">
+		<div class="l_con fl">
+			<a class="reg_logo"><img src="/static/images/logo02.png"></a>
+			<div class="reg_slogan">足不出户  ·  新鲜每一天</div>
+			<div class="reg_banner"></div>
+		</div>
+
+		<div class="r_con fr">
+			<div class="reg_title clearfix">
+				<h1>用户注册</h1>
+				<a href="/user/login/">登录</a>
+			</div>
+			<div class="reg_form clearfix">
+				<form action="/user/register1/" method="post" class="myform">
+				<ul>
+					<li>
+						<label>用户名:</label>
+						<input type="text" name="user_name" id="user_name">
+						<span class="error_tip">提示信息</span>
+					</li>					
+					<li>
+						<label>密码:</label>
+						<input type="password" name="pwd" id="pwd">
+						<span class="error_tip">提示信息</span>
+					</li>
+					<li>
+						<label>确认密码:</label>
+						<input type="password" name="cpwd" id="cpwd">
+						<span class="error_tip">提示信息</span>
+					</li>
+					<li>
+						<label>邮箱:</label>
+						<input type="text" name="email" id="email">
+						<span class="error_tip">提示信息</span>
+					</li>
+
+
+{#                        <label style="font-size: 15px">请输入验证码:</label>#}
+{#                        <input type="text" name="yzm_value" style="height:20px">#}
+{#                        <img src="/user/verify_code/?" class="img" id="img" >#}
+{#                        <span>点击图片刷新</span>#}
+
+
+					<li class="agreement">
+						<input type="checkbox" name="allow" id="allow" checked="checked">
+						<label>同意”天天生鲜用户使用协议“</label>
+						<span class="error_tip2">提示信息</span>
+					</li>
+					<li class="reg_sub">
+						<input type="submit" value="注 册" name="" id="submit">
+					</li>
+				</ul>				
+				</form>
+			</div>
+
+		</div>
+
+	</div>
+{% endblock body %}

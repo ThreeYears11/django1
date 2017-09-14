@@ -1,4 +1,5 @@
 from django.db import models
+from tinymce.models import HTMLField
 
 # Create your models here.
 class TypeInfo(models.Model):
@@ -27,7 +28,9 @@ class GoodsInfo(models.Model):
     #库存量
     gkucun=models.IntegerField()
     #描述
-    gcontent=models.TextField()
+    # gcontent=models.TextField()
+    #富文本编辑
+    gcontent = HTMLField()
     #类型
     gtype=models.ForeignKey("TypeInfo")
 

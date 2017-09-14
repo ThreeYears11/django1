@@ -6,10 +6,10 @@
 	<link rel="stylesheet" type="text/css" href="/static/css/reset.css">
 	<link rel="stylesheet" type="text/css" href="/static/css/main.css">
 	<script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
-    {% block head %}{% endblock head %}
+
 </head>
 <body>
-<div class="header_con">
+	<div class="header_con">
 		<div class="header">
 			<div class="welcome fl">欢迎来到天天生鲜!</div>
 			<div class="fr">
@@ -37,12 +37,13 @@
 
 	<div class="search_bar clearfix">
 		<a href="/" class="logo fl"><img src="/static/images/logo.png"></a>
-        {% block detail %}
-
-        {% endblock detail %}
-		<div class="search_con fr">
+		<div class="search_con fl">
 			<input type="text" class="input_text fl" name="" placeholder="搜索商品">
 			<input type="button" class="input_btn fr" name="" value="搜索">
+		</div>
+		<div class="guest_cart fr">
+			<a href="/cart/center/" class="cart_name fl">我的购物车</a>
+			<div class="goods_count fl" id="show_count">1</div>
 		</div>
 	</div>
 
@@ -61,6 +62,6 @@
 		<p>CopyRight © 2016 北京天天生鲜信息技术有限公司 All Rights Reserved</p>
 		<p>电话：010-****888    京ICP备*******8号</p>
 	</div>
-    {% block insert %}{% endblock insert %}
+{% block other %}{% endblock other %}
 </body>
 </html>
