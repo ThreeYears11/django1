@@ -4,6 +4,15 @@
 {% block head %}
     <script src="/static/js/register.js"></script>
     <script src="/static/js/jquery-1.12.4.min.js"></script>
+    <script>
+        $(function(){
+            $(".add_goods").click(function () {
+                var goods_id = $(this).attr("value");
+                location.href = "/cart/center/?goods_id="+goods_id+"&goods_num=1"
+            })
+        })
+
+    </script>
 
 {% endblock head %}
 
@@ -15,8 +24,8 @@
             <input type="button" class="input_btn fr" name="" value="搜索">
         </div>
         <div class="guest_cart fr">
-            <a href="#" class="cart_name fl">我的购物车</a>
-            <div class="goods_count fl" id="show_count">1</div>
+            <a href="/cart/" class="cart_name fl">我的购物车</a>
+            <div class="goods_count fl" id="show_count">0</div>
         </div>
     </div>
 
@@ -80,15 +89,7 @@
             </div>
 
             <ul class="goods_type_list clearfix">
-                {#				<li>#}
-                {#					<a href="detail.html"><img src="/static/images/goods/goods003.jpg"></a>#}
-                {#					<h4><a href="detail.html">大兴大棚草莓</a></h4>#}
-                {#					<div class="operate">#}
-                {#						<span class="prize">￥16.80</span>#}
-                {#						<span class="unit">16.80/500g</span>#}
-                {#						<a href="#" class="add_goods" title="加入购物车"></a>#}
-                {#					</div>#}
-                {#				</li>#}
+
                 {% for i in goods_list %}
                     <li>
                         <a href="detail{{ i.id }}.html"><img src="/static/images/{{ i.gpic }}"></a>
@@ -96,7 +97,7 @@
                         <div class="operate">
                             <span class="prize">￥{{ i.gprice }}</span>
                             <span class="unit">{{ i.gprice }}/500g</span>
-                            <a href="#" class="add_goods" title="加入购物车"></a>
+                            <a href="#" class="add_goods" value="{{ i.id }}" title="加入购物车"></a>
                         </div>
                     </li>
 
