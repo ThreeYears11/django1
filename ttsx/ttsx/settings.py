@@ -39,6 +39,8 @@ INSTALLED_APPS = (
     'tt_user',
     'tt_cart',
     'tt_order',
+    'tinymce',
+
     )
 
 MIDDLEWARE_CLASSES = (
@@ -84,8 +86,8 @@ DATABASES = {
         'PORT': '3306',
         'USER': 'root',
         'PASSWORD': 'mysql',
+        }
     }
-}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
@@ -106,6 +108,22 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
-]
-MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media')
+    ]
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media')
+TINYMCE_DEFAULT_CONFIG = {
+    'theme': 'advanced',
+    'width': 600,
+    'height': 400,
+    }
+# HAYSTACK_CONNECTIONS = {
+#     'default': {
+#         #使用whoosh引擎
+#         'ENGINE': 'haystack.backends.whoosh_cn_backend.WhooshEngine',
+#         #索引文件路径
+#         'PATH': os.path.join(BASE_DIR, 'whoosh_index'),
+#         }
+#     }
+#
+# HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
