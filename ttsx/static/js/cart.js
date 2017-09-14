@@ -8,12 +8,12 @@
             $('.cart_con ul').each(function () {
                 number += 1
             })
-            console.log(number)
             $('.total_count em').html(number)
             $('.settlements .col03 b').html(number)
 
 
             $('.cart_con ul').each(function () {
+
                 // {# 删除的点击效果 #}
                 $('.cart_list_td .col08 a').click(function () {
 
@@ -161,4 +161,37 @@
             $(this).siblings('.col03').children('em').html(all_price.toFixed(2))
             $('.settlements .col03 b').html(n)
         })
+
+            //input 的change事件
+            $('.cart_con ul').each(function () {
+
+
+                $('.num_show').bind('input',function () {
+                    // {# 修改数据库中的值 #}
+                    var good_id = $(this).parent().parent().siblings('.good_id').html()
+                    var count = $(this).val()-1
+                    $.get('/cart/change_data1/',{'good_id':good_id,'user_id':1,'count':count})
+                    // {# 动态修改小计金额#}
+                    var number = parseInt($(this).val())
+                    if ($('.num_show').val()=='') {
+                        number = 0
+                    }
+                    var price = parseFloat($(this).parent().parent().prev().children().html())
+                    var sum_price = price * number
+                    $(this).parent().parent().next().html(sum_price.toFixed(2) + '元')
+                    // 动态计算结算金额
+                    var all_price = 0
+                    $('.cart_con ul').each(function () {
+                        var fuhao = 0
+                        var single_price = parseFloat($(this).find('.col07').html())
+                        var a = $(this).children('.col01').children().prop('checked')
+                        if (a == true) {
+                            fuhao = 1
+                        }
+                        all_price += single_price*fuhao
+                    })
+                    var a = $(this).parent().parent().parent().parent().next().find('.col03').children('em').html(all_price.toFixed(2))
+                    console.log(a)
+                })
+            })
         })
