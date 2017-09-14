@@ -3,5 +3,6 @@ from django.contrib import admin
 from .views import *
 
 urlpatterns = [
-    url('^place_order/$', index)
+    url('^place_order/$', index),
+    url('^submit/$', submit)
 ]

@@ -1,5 +1,7 @@
 import time
-from django.shortcuts import render
+
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
 from tt_cart.models import *
 from .models import *
 from django.db import transaction
@@ -9,6 +11,8 @@ from django.db import transaction
 @transaction.atomic
 def index(request):
     car_id_list = request.POST.getlist('cid')
+    if not car_id_list:
+        car_id_list = request.GET.getlist('cid')
     print(car_id_list)
     # car_id_list = [15, 16]
     total = 0
@@ -39,7 +43,10 @@ def index(request):
             flag1 = False
             break
         # print(od.goods_id, od.order_id, od.price, od.count)
+        od.goods.gkucun -= od.count
+        od.goods.save()
         od.save()
+        # car.delete()
         total += od.price * od.count
     if flag1:
         order.ototal = total
@@ -48,6 +55,15 @@ def index(request):
         transaction.savepoint_commit(sid)
     else:
         transaction.savepoint_rollback(sid)
+        return redirect('/cart/center/')
     content = {'order': order}
     return render(request, 'tt_order/place_order.html', content)
 
+
+def submit(request):
+    print('123123123123')
+    oid = request.POST.get('oid')
+    o = OrderInfo.objects.get(oid=oid)
+    o.oIsPay = 1
+    o.save()
+    return HttpResponse('<a href="/">付款成功,点击继续购物</a>')
