@@ -1,22 +1,41 @@
-{%  extends "base.html"%}
-{% block head %}
-    <script src="/static/js/jquery-ui.min.js"></script>
-    <script src="/static/js/slide.js"></script>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<title>天天生鲜-首页</title>
+	<link rel="stylesheet" type="text/css" href="/static/css/reset.css">
+	<link rel="stylesheet" type="text/css" href="/static/css/main.css">
+	<script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
+	<script type="text/javascript" src="/static/js/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="/static/js/slide.js"></script>
+    <script>
+        $(function () {
+            var user = $('.login_info');
+            if(user.children().html()==''){
+                user.hide();
+                $('.login_btn').show();
+            }else {
+                user.show();
+                $('.login_btn').hide();
+            }
 
-{% endblock head %}
+        })
 
-{% block body %}
-    <div class="header_con">
+
+    </script>
+</head>
+<body>
+	<div class="header_con">
 		<div class="header">
 			<div class="welcome fl">欢迎来到天天生鲜!</div>
 			<div class="fr">
 				<div class="login_info fl">
-					欢迎您：<em>张 山</em>
+					欢迎您：<em>{{ name }}</em>
 				</div>
 				<div class="login_btn fl">
-					<a href="login.html">登录</a>
+					<a href="/user/login/">登录</a>
 					<span>|</span>
-					<a href="register.html">注册</a>
+					<a href="/user/register/">注册</a>
 				</div>
 				<div class="user_link fl">
 					<span>|</span>
@@ -27,11 +46,12 @@
 					<a href="user_center_order.html">我的订单</a>
 				</div>
 			</div>
-		</div>		
+		</div>
 	</div>
 
 	<div class="search_bar clearfix">
 		<a href="index.html" class="logo fl"><img src="/static/images/logo.png"></a>
+
 		<div class="search_con fl">
 			<input type="text" class="input_text fl" name="" placeholder="搜索商品">
 			<input type="button" class="input_btn fr" name="" value="搜索">
@@ -104,6 +124,7 @@
 					<div class="prize">¥ {{ i.gprice }}</div>
 				</li>
                 {% endfor %}
+
 			</ul>
 		</div>
 	</div>
@@ -114,7 +135,7 @@
 			<div class="subtitle fl">
 				<span>|</span>
 				<a href="#">河虾</a>
-				<a href="#">扇贝</a>				
+				<a href="#">扇贝</a>
 			</div>
 			<a href="/list2/" class="goods_more fr">查看更多 ></a>
 		</div>
@@ -158,6 +179,7 @@
 					<div class="prize">¥ {{ i.gprice }}</div>
 				</li>
                 {% endfor %}
+
 			</ul>
 		</div>
 	</div>
@@ -185,6 +207,7 @@
 					<div class="prize">¥ {{ i.gprice }}</div>
 				</li>
                 {% endfor %}
+
 			</ul>
 		</div>
 	</div>
@@ -212,6 +235,7 @@
 					<div class="prize">¥ {{ i.gprice }}</div>
 				</li>
                 {% endfor %}
+
 			</ul>
 		</div>
 	</div>
@@ -242,4 +266,37 @@
 			</ul>
 		</div>
 	</div>
-{% endblock body %}
+
+
+	<div class="footer">
+		<div class="foot_link">
+			<a href="#">关于我们</a>
+			<span>|</span>
+			<a href="#">联系我们</a>
+			<span>|</span>
+			<a href="#">招聘人才</a>
+			<span>|</span>
+			<a href="#">友情链接</a>
+		</div>
+		<p>CopyRight © 2016 北京天天生鲜信息技术有限公司 All Rights Reserved</p>
+		<p>电话：010-****888    京ICP备*******8号</p>
+	</div>
+	<script type="text/javascript" src="js/slideshow.js"></script>
+	<script type="text/javascript">
+		BCSlideshow('focuspic');
+		var oFruit = document.getElementById('fruit_more');
+		var oShownum = document.getElementById('show_count');
+
+		var hasorder = localStorage.getItem('order_finish');
+
+		if(hasorder)
+		{
+			oShownum.innerHTML = '2';
+		}
+
+		oFruit.onclick = function(){
+			window.location.href = 'list.html';
+		}
+	</script>
+</body>
+</html>

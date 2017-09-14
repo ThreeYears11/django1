@@ -5,6 +5,7 @@ from tt_goods import views
 
 urlpatterns = [
 
+
     url(r'^$', views.index),
 
     url(r'^list(\d+)/$', views.list),

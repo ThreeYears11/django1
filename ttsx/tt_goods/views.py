@@ -105,3 +105,4 @@ def detail(request,id,id2):
               }
     return render(request,"tt_goods/detail.html",context)
 
+

@@ -6,29 +6,7 @@
 	<link rel="stylesheet" type="text/css" href="/static/css/reset.css">
 	<link rel="stylesheet" type="text/css" href="/static/css/main.css">
 	<script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
-    <style>
-        .exist{
-            display: none;
-        }
-    </style>
-    {% block head %}{% endblock head %}
-    <script>
-        $(function () {
-            var btn = $('.login_btn');
-            var info = $('.login_info');
-            $.get('/user/user_center_info_get/',function (data) {
-                if(data.islogin) {
-                    btn.hide();
-                    info.show().html('欢迎您：<em>'+ data.uname +'</em>');
-                    $('.exist').show();
-                } else {
-                     info.hide();
-                    btn.show();
-                    $('.exist').hide();
-                }
-            });
-        });
-    </script>
+
 </head>
 <body>
 	<div class="header_con">
@@ -47,7 +25,7 @@
 					<span>|</span>
 					<a href="/user/user_center_info/">用户中心</a>
 					<span>|</span>
-					<a href="/cart/">我的购物车</a>
+					<a href="/cart/center/">我的购物车</a>
 					<span>|</span>
 					<a href="/user/user_center_order/">我的订单</a>
                     <span class="exist">|</span>
