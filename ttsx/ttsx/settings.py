@@ -39,9 +39,8 @@ INSTALLED_APPS = (
     'tt_cart',
     'tt_order',
     'tt_goods',
-
+    'tinymce',
 )
-
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -109,5 +108,21 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
-MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media')
-#MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media')
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media')
+TINYMCE_DEFAULT_CONFIG = {
+'theme': 'advanced',
+'width': 600,
+'height': 400,
+}
+# HAYSTACK_CONNECTIONS = {
+#     'default': {
+#         #使用whoosh引擎
+#         'ENGINE': 'haystack.backends.whoosh_cn_backend.WhooshEngine',
+#         #索引文件路径
+#         'PATH': os.path.join(BASE_DIR, 'whoosh_index'),
+#         }
+#     }
+#
+# HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'

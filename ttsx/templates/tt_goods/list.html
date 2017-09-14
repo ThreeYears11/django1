@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+
+{% block head %}
+    <script src="/static/js/register.js"></script>
+    <script src="/static/js/jquery-1.12.4.min.js"></script>
+
+{% endblock head %}
+
+{% block body %}
+    <div class="search_bar clearfix">
+        <a href="index.html" class="logo fl"><img src="/static/images/logo.png"></a>
+        <div class="search_con fl">
+            <input type="text" class="input_text fl" name="" placeholder="搜索商品">
+            <input type="button" class="input_btn fr" name="" value="搜索">
+        </div>
+        <div class="guest_cart fr">
+            <a href="#" class="cart_name fl">我的购物车</a>
+            <div class="goods_count fl" id="show_count">1</div>
+        </div>
+    </div>
+
+
+
+    <div class="navbar_con">
+        <div class="navbar clearfix">
+            <div class="subnav_con fl">
+                <h1>全部商品分类</h1>
+                <span></span>
+                <ul class="subnav">
+                    <li><a href="/list1/" class="fruit">新鲜水果</a></li>
+                    <li><a href="/list2/" class="seafood">海鲜水产</a></li>
+                    <li><a href="/list3/" class="meet">猪牛羊肉</a></li>
+                    <li><a href="/list4/" class="egg">禽类蛋品</a></li>
+                    <li><a href="/list5/" class="vegetables">新鲜蔬菜</a></li>
+                    <li><a href="/list6/" class="ice">速冻食品</a></li>
+                </ul>
+            </div>
+            <ul class="navlist fl">
+                <li><a href="/">首页</a></li>
+                <li class="interval">|</li>
+                <li><a href="">手机生鲜</a></li>
+                <li class="interval">|</li>
+                <li><a href="">抽奖</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="breadcrumb">
+        <a href="/reset/">全部分类</a>
+        <span>></span>
+        <a href="">{{ goodlist1.ttitle }}</a>
+    </div>
+
+    <div class="main_wrap clearfix">
+        <div class="l_wrap fl clearfix">
+            <div class="new_goods">
+                <h3>新品推荐</h3>
+                <ul>
+
+                    {% for i in goods_new %}
+                        <li>
+                            <a href="#"><img src="/static/images/{{ i.gpic }}"></a>
+                            <h4><a href="#">{{ i.gtitle }}</a></h4>
+                            <div class="prize">￥{{ i.gprice }}</div>
+                        </li>
+
+                    {% endfor %}
+
+
+                </ul>
+            </div>
+        </div>
+
+        <div class="r_wrap fr clearfix">
+            <div class="sort_bar">
+                <a href="#" class="active">默认</a>
+                <a href="#">价格</a>
+                <a href="#">人气</a>
+            </div>
+
+            <ul class="goods_type_list clearfix">
+                {#				<li>#}
+                {#					<a href="detail.html"><img src="/static/images/goods/goods003.jpg"></a>#}
+                {#					<h4><a href="detail.html">大兴大棚草莓</a></h4>#}
+                {#					<div class="operate">#}
+                {#						<span class="prize">￥16.80</span>#}
+                {#						<span class="unit">16.80/500g</span>#}
+                {#						<a href="#" class="add_goods" title="加入购物车"></a>#}
+                {#					</div>#}
+                {#				</li>#}
+                {% for i in goods_list %}
+                    <li>
+                        <a href="detail{{ i.id }}.html"><img src="/static/images/{{ i.gpic }}"></a>
+                        <h4><a href="detail{{ i.id }}.html">{{ i.gtitle }}</a></h4>
+                        <div class="operate">
+                            <span class="prize">￥{{ i.gprice }}</span>
+                            <span class="unit">{{ i.gprice }}/500g</span>
+                            <a href="#" class="add_goods" title="加入购物车"></a>
+                        </div>
+                    </li>
+
+                {% endfor %}
+
+            </ul>
+
+            <div class="pagenation">
+                <a href="{{ uplist }}">&lt上一页</a>
+
+                {% for i in pagelist %}
+                    <a class="list_range" href="/list{{ listid }}/{{ i }}" value="{{ i }}"
+                       value2="{{ listid }}">{{ i }}</a>
+                {% endfor %}
+                <a href="{{ nextlist }}">下一页></a>
+            </div>
+        </div>
+    </div>
+
+{% endblock body %}
