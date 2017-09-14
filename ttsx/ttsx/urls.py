@@ -20,7 +20,7 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^user/',include('tt_user.urls')),
     url(r'^order/', include('tt_order.urls')),
-    # url(r'^cart/', include('tt_cart.urls')),
+    url(r'^cart/', include('tt_cart.urls')),
     url(r'^', include('tt_goods.urls')),
     url(r'^tinymce/', include('tinymce.urls')),
     # url(r'^tinymce/', include('tinymce.urls')),
