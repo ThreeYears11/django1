@@ -4,7 +4,7 @@ from django.conf.urls import url
 from . import views
 
 urlpatterns = [
-    url(r'/^islogin/$', views.islogin),
+    url(r'/^user_center_info_get/$', views.user_center_info_get),
 ]
 
 

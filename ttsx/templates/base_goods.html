@@ -6,18 +6,25 @@
 	<link rel="stylesheet" type="text/css" href="/static/css/reset.css">
 	<link rel="stylesheet" type="text/css" href="/static/css/main.css">
 	<script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
+    <style>
+        .exist{
+            display: none;
+        }
+    </style>
     {% block head %}{% endblock head %}
     <script>
         $(function () {
             var btn = $('.login_btn');
             var info = $('.login_info');
-            $.get('/user/islogin/',function (data) {
+            $.get('/user/user_center_info_get/',function (data) {
                 if(data.islogin) {
                     btn.hide();
                     info.show().html('欢迎您：<em>'+ data.uname +'</em>');
+                    $('.exist').show();
                 } else {
                      info.hide();
                     btn.show();
+                    $('.exist').hide();
                 }
             });
         });
@@ -32,30 +39,32 @@
 					欢迎您：<em>张 山</em>
 				</div>
 				<div class="login_btn fl">
-					<a href="login.html">登录</a>
+					<a href="/user/login/">登录</a>
 					<span>|</span>
-					<a href="register.html">注册</a>
+					<a href="/user/register/">注册</a>
 				</div>
 				<div class="user_link fl">
 					<span>|</span>
-					<a href="user_center_info.html">用户中心</a>
+					<a href="/user/user_center_info/">用户中心</a>
 					<span>|</span>
-					<a href="cart.html">我的购物车</a>
+					<a href="/cart/">我的购物车</a>
 					<span>|</span>
-					<a href="user_center_order.html">我的订单</a>
+					<a href="/user/user_center_order/">我的订单</a>
+                    <span class="exist">|</span>
+                    <a href="/user/exist/" class="exist">退出</a>
 				</div>
 			</div>
 		</div>
 	</div>
 
 	<div class="search_bar clearfix">
-		<a href="index.html" class="logo fl"><img src="/static/images/logo.png"></a>
+		<a href="/" class="logo fl"><img src="/static/images/logo.png"></a>
 		<div class="search_con fl">
 			<input type="text" class="input_text fl" name="" placeholder="搜索商品">
 			<input type="button" class="input_btn fr" name="" value="搜索">
 		</div>
 		<div class="guest_cart fr">
-			<a href="cart.html" class="cart_name fl">我的购物车</a>
+			<a href="/cart/center/" class="cart_name fl">我的购物车</a>
 			<div class="goods_count fl" id="show_count">1</div>
 		</div>
 	</div>
