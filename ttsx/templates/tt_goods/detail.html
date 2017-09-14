@@ -213,36 +213,43 @@
             $(".total").html("总价：<em>"+sum+"</em>")
 
 
-            console.log("hahahahaha")
-
         });
         $(".my_cart").click(function () {
             goods_num = $("#show_count").attr("value");
 
             if(goods_num=="0"){
                 console.log(goods_num);
-                location.href="/cart.html/";
+                location.href="/cart/center/";
                 return
             }
 
-            location.href="/cart/center/?goods_id={{detail_goods.id}}&goods_num="+goods_num+"&goods_gpric="+{{ detail_goods.gprice }};
+            location.href="/cart/center/?goods_id={{detail_goods.id}}&goods_num="+goods_num;
 
         });$(".cart_name").click(function () {
 
             goods_num = $("#show_count").attr("value");
             if(goods_num=="0"){
-{#                location.href="/cart.html/"#}
+
                 console.log(goods_num);
-                location.href="/cart.html/";
+                location.href="/cart/center/";
                 return
             }
 
-            location.href="/cart/center/?goods_id={{detail_goods.id}}&goods_num="+goods_num+"&goods_gpric="+{{ detail_goods.gprice }};
+            location.href="/cart/center/?goods_id={{detail_goods.id}}&goods_num="+goods_num;
+
+        });$(".buy_btn").click(function () {
+
+            goods_sum = $(".num_show").attr("value");
+            if(goods_sum=="0"){
+
+                alert("啊哦，请选择商品数量（づ￣3￣）づ╭❤～");
+
+                return false
+            }
+
+            location.href="/（づ￣3￣）づ╭❤～/?goods_id={{detail_goods.id}}&goods_sum="+goods_sum;
 
         });
-
-
-
     </script>
 	
 </body>
