@@ -1,5 +1,5 @@
 from django.shortcuts import render
 
 # Create your views here.
-def indx(rquest):
-    pass
+def index(request):
+    return render(request,'tt_goods/index.html')

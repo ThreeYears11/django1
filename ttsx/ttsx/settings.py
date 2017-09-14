@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'tt_cart',
     'tt_order',
     'tt_goods',
+    'djcelery',
 
 )
 
@@ -111,3 +112,18 @@ STATICFILES_DIRS = [
 ]
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media')
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media')
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.163.com'
+EMAIL_PORT = 25
+
+EMAIL_HOST_USER = 'xueyun668@163.com'
+
+EMAIL_HOST_PASSWORD = 'xueyun668'
+
+EMAIL_FROM = 'ttsx_sz1<xueyun668@163.com>'
+
+import djcelery
+djcelery.setup_loader()
+BROKER_URL = 'redis://127.0.0.1:6379/2'
+CELERY_IMPORTS = ('tt_user.task')
