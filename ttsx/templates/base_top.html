@@ -7,21 +7,6 @@
 	<link rel="stylesheet" type="text/css" href="/static/css/main.css">
 	<script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
     {% block head %}{% endblock head %}
-<script>
-        $(function () {
-            var btn = $('.login_btn');
-            var info = $('.login_info');
-            $.get('/user/islogin/',function (data) {
-                if(data.islogin) {
-                    btn.hide();
-                    info.show().html('欢迎您：<em>'+ data.uname +'</em>');
-                } else {
-                     info.hide();
-                    btn.show();
-                }
-            });
-        });
-    </script>
 </head>
 <body>
 <div class="header_con">
@@ -32,17 +17,19 @@
 					欢迎您：<em>张 山</em>
 				</div>
 				<div class="login_btn fl">
-					<a href="login.html">登录</a>
+					<a href="/user/login/">登录</a>
 					<span>|</span>
-					<a href="register.html">注册</a>
+					<a href="/user/register/">注册</a>
 				</div>
 				<div class="user_link fl">
 					<span>|</span>
-					<a href="user_center_info.html">用户中心</a>
+					<a href="/user/user_center_info/">用户中心</a>
 					<span>|</span>
-					<a href="cart.html">我的购物车</a>
+					<a href="/cart/center/">我的购物车</a>
 					<span>|</span>
-					<a href="user_center_order.html">我的订单</a>
+					<a href="/user/user_center_order/">我的订单</a>
+                    <span class="exist">|</span>
+                    <a href="/user/exist/" class="exist">退出</a>
 				</div>
 			</div>
 		</div>
@@ -74,5 +61,6 @@
 		<p>CopyRight © 2016 北京天天生鲜信息技术有限公司 All Rights Reserved</p>
 		<p>电话：010-****888    京ICP备*******8号</p>
 	</div>
+    {% block insert %}{% endblock insert %}
 </body>
 </html>

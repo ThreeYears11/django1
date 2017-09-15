@@ -1,88 +1,39 @@
-{% extends 'base.html' %}
+{% extends 'base_top.html' %}
 {% block title %}
     <title>天天生鲜-提交订单</title>
-{% endblock title %}
+{% endblock %}
+{% block detail %}
+    <div class="sub_page_name fl">|&nbsp;&nbsp;&nbsp;&nbsp;提交订单</div>
+{% endblock %}
 {% block head %}
-    <script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
-    <script type="text/javascript">
-        $('#order_btn').click(function () {
-            localStorage.setItem('order_finish', 2);
-
-            $('.popup_con').fadeIn('fast', function () {
-                setTimeout(function () {
-                    $('.popup_con').fadeOut('fast', function () {
-                        window.location.href = 'index.html';
-                    });
-                }, 3000)
-            });
-        });
+    <script src="/static/js/jquery-1.12.4.min.js"></script>
+    <script>
         $(function () {
-            var y = 0;
-            $('#order_btn').click(function () {
-                console.log('1');
-                $.post("/order/submit/", {'oid': {{ oid }}, 'ototal': y.toFixed(2)});
+            $('#goods_list ul').each(function () {
+                var price = $(this).children('.col05').html();
+                var count = $(this).children('.col06').html();
+                price = price.substr(0, price.length - 1);
+                $(this).children('.col07').html((price * count).toFixed(2) + '元')
             });
-            var x = 1;
-            $('#price ul').each(function (i, j) {
-                console.log(j);
-                var a = $(j).children('.col05').html();
-                var b = $(j).children('.col06').html();
-                $(j).children('.col07').html((a * b).toFixed());
-                y += a * b;
-            });
-            {#            x = parseFloat(x.toFixed(2));#}
-            $('.total_goods_count').html("共<em>" + x.toFixed(2) + "</em>件商品，总金额<b>" + y.toFixed(2) + "元</b>");
-            y += 10;
-            $('.total_pay').html("实付款：<b>" + y.toFixed(2) + "元</b>");
+            var price = $('.total_goods_count b').html();
+            price = price.substr(0, price.length - 1);
+            console.log(price);
+            $('.total_pay b').html((parseFloat(price) + 10).toFixed(2) + '元')
         })
     </script>
-{% endblock head %}
+{% endblock %}
 {% block body %}
-    <div class="header_con">
-        <div class="header">
-            <div class="welcome fl">欢迎来到天天生鲜!</div>
-            <div class="fr">
-                <div class="login_info fl">
-                    欢迎您：<em>张 山</em>
-                </div>
-                <div class="login_btn fl">
-                    <a href="login.html">登录</a>
-                    <span>|</span>
-                    <a href="register.html">注册</a>
-                </div>
-                <div class="user_link fl">
-                    <span>|</span>
-                    <a href="user_center_info.html">用户中心</a>
-                    <span>|</span>
-                    <a href="cart.html">我的购物车</a>
-                    <span>|</span>
-                    <a href="user_center_order.html">我的订单</a>
-                </div>
-            </div>
-        </div>
-    </div>
-    {
-    <div class="search_bar clearfix">
-        <a href="index.html" class="logo fl"><img src="/static/images/logo.png"></a>
-        <div class="sub_page_name fl">|&nbsp;&nbsp;&nbsp;&nbsp;提交订单</div>
-        <div class="search_con fr">
-            <input type="text" class="input_text fl" name="" placeholder="搜索商品">
-            <input type="button" class="input_btn fr" name="" value="搜索">
-        </div>
-    </div>
-
     <h3 class="common_title">确认收货地址</h3>
-
     <div class="common_list_con clearfix">
         <dl>
             <dt>寄送到：</dt>
-            <dd><input type="radio" name="" checked="">{{ user.oaddress }} {{ phone.uphone }}
-            </dd>
+            {% for foo in order.user.useraddressinfo_set.all %}
+                <dd><input type="radio" name="" checked="">{{ foo.uaddress }} （{{ foo.uname }} 收）{{ foo.uphone }}
+                </dd>
+            {% endfor %}
         </dl>
         <a href="user_center_site.html" class="edit_site">编辑收货地址</a>
-
     </div>
-
     <h3 class="common_title">支付方式</h3>
     <div class="common_list_con clearfix">
         <div class="pay_style_con clearfix">
@@ -96,62 +47,57 @@
             <label class="bank">银行卡支付</label>
         </div>
     </div>
-
     <h3 class="common_title">商品列表</h3>
-
-    <div class="common_list_con clearfix">
-        <ul class="goods_list_th clearfix">
-            <li class="col01">商品名称</li>
-            <li class="col02">商品单位</li>
-            <li class="col03">商品价格</li>
-            <li class="col04">数量</li>
-            <li class="col05">小计</li>
-        </ul>
-        <div id="price">
-            {% for good in goods %}
-                <ul class="goods_list_td clearfix">
-                    <li class="col01">{{ forloop.counter }}</li>
-                    <li class="col02"><img src="/static/{{ good.goods.gpic }}"></li>
-                    <li class="col03">{{ good.goods.gtitle }}</li>
-                    <li class="col04">{{ good.goods.gunit }}</li>
-                    <li class="col05">{{ good.goods.gprice }}</li>
-                    <li class="col06">{{ good.count }}</li>
-                    <li class="col07">{{ good.goods.gprice }}</li>
-                </ul>
-            {% endfor %}
+    <form action="/order/submit/" method="post">
+        <div class="common_list_con clearfix">
+            <ul class="goods_list_th clearfix">
+                <li class="col01">商品名称</li>
+                <li class="col02">商品单位</li>
+                <li class="col03">商品价格</li>
+                <li class="col04">数量</li>
+                <li class="col05">小计</li>
+            </ul>
+            <div id="goods_list">
+                {% for goods in order.orderdetailinfo_set.all %}
+                    <ul class="goods_list_td clearfix">
+                        <li class="col01">{{ forloop.counter }}</li>
+                        <li class="col02"><img src="/static/images/{{ goods.goods.gpic }}"></li>
+                        <li class="col03">{{ goods.goods.gtitle|truncatechars:15 }}</li>
+                        <li class="col04">{{ goods.goods.gunit }}</li>
+                        <li class="col05">{{ goods.goods.gprice }}元</li>
+                        <li class="col06">{{ goods.count }}</li>
+                        <li class="col07"> 10元</li>
+                    </ul>
+                {% endfor %}
+            </div>
         </div>
-        {#        <ul class="goods_list_td clearfix">#}
-        {#            <li class="col01">1</li>#}
-        {#            <li class="col02"><img src="/static/images/goods/goods012.jpg"></li>#}
-        {#            <li class="col03">奇异果</li>#}
-        {#            <li class="col04">500g</li>#}
-        {#            <li class="col05">25.80元</li>#}
-        {#            <li class="col06">1</li>#}
-        {#            <li class="col07">25.80元</li>#}
-        {#        </ul>#}
-        {#        <ul class="goods_list_td clearfix">#}
-        {#            <li class="col01">2</li>#}
-        {#            <li class="col02"><img src="/static/images/goods/goods003.jpg"></li>#}
-        {#            <li class="col03">大兴大棚草莓</li>#}
-        {#            <li class="col04">500g</li>#}
-        {#            <li class="col05">16.80元</li>#}
-        {#            <li class="col06">1</li>#}
-        {#            <li class="col07">16.80元</li>#}
-        {#        </ul>#}
-    </div>
+        <h3 class="common_title">总金额结算</h3>
+        <div class="common_list_con clearfix">
+            <div class="settle_con">
+                <div class="total_goods_count">
+                    共<em>{{ order.orderdetailinfo_set.all|length }}</em>件商品，总金额<b>{{ order.ototal }}元</b></div>
+                <div class="transit">运费：<b>10元</b></div>
+                <div class="total_pay">实付款：<b>10元</b></div>
 
-    <h3 class="common_title">总金额结算</h3>
-
-    <div class="common_list_con clearfix">
-        <div class="settle_con">
-            <div class="total_goods_count">共<em>2</em>件商品，总金额<b>42.60元</b></div>
-            <div class="transit">运费：<b>10元</b></div>
-            <div class="total_pay">实付款：<b>52.60元</b></div>
+            </div>
         </div>
-    </div>
-
-
-    <div class="order_submit clearfix">
-        <a href="javascript:;" id="order_btn">提交订单</a>
-    </div>
-{% endblock body %}
+        <div class="order_submit clearfix">
+            <input type="hidden" value="{{ order.oid }}" name="oid">
+            <input type="submit" value="提交">
+        </div>
+    </form>
+    <script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript">
+        $('#order_btn').click(function () {
+            localStorage.setItem('order_finish', 2);
+            $('.popup_con').fadeIn('fast', function () {
+                setTimeout(function () {
+                    $('.popup_con').fadeOut('fast', function () {
+                        window.location.href = 'index.html';
+                    });
+                }, 3000)
+            });
+        });
+    </script>
+{% endblock %}
+>>>>>>> frank123123

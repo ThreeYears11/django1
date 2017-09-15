@@ -38,7 +38,9 @@ INSTALLED_APPS = (
     'tt_user',
     'tt_cart',
     'tt_order',
-    "tt_goods",
+    'tt_goods',
+    'tinymce',
+    'djcelery',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -107,5 +109,36 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
-MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media')
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media')
+TINYMCE_DEFAULT_CONFIG = {
+'theme': 'advanced',
+'width': 600,
+'height': 400,
+}
+# HAYSTACK_CONNECTIONS = {
+#     'default': {
+#         #使用whoosh引擎
+#         'ENGINE': 'haystack.backends.whoosh_cn_backend.WhooshEngine',
+#         #索引文件路径
+#         'PATH': os.path.join(BASE_DIR, 'whoosh_index'),
+#         }
+#     }
+#
+# HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.163.com'
+EMAIL_PORT = 25
+
+EMAIL_HOST_USER = 'xueyun668@163.com'
+
+EMAIL_HOST_PASSWORD = 'xueyun668'
+
+EMAIL_FROM = 'ttsx_sz1<xueyun668@163.com>'
+
+import djcelery
+djcelery.setup_loader()
+BROKER_URL = 'redis://127.0.0.1:6379/2'
+CELERY_IMPORTS = ('tt_user.task')

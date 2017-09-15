@@ -1,8 +1,8 @@
-from django.conf.urls import url
-from . import views
+from django.conf.urls import include, url
+from django.contrib import admin
+from .views import *
 
 urlpatterns = [
-    url(r'^place_order/$', views.place_order),
-    url(r'^add/$', views.order_add),
-    url('^submit/$', views.submit),
+    url('^place_order/$', index),
+    url('^submit/$', submit)
 ]

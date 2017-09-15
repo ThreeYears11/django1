@@ -5,7 +5,6 @@
 	<title>天天生鲜-商品详情</title>
 	<link rel="stylesheet" type="text/css" href="/static/css/reset.css">
 	<link rel="stylesheet" type="text/css" href="/static/css/main.css">
-
 </head>
 <body>
 	<div class="header_con">
@@ -77,7 +76,7 @@
 	</div>
 
 	<div class="goods_detail_con clearfix">
-		<div class="goods_detail_pic fl"><img src="images/goods_detail.jpg"></div>
+		<div class="goods_detail_pic fl"><img src="/static/images/goods_detail.jpg"></div>
 
 		<div class="goods_detail_list fr">
 			<h3>大兴大棚草莓</h3>
@@ -108,12 +107,12 @@
 				<h3>新品推荐</h3>
 				<ul>
 					<li>
-						<a href="#"><img src="images/goods/goods001.jpg"></a>
+						<a href="#"><img src="/static/images/goods/goods001.jpg"></a>
 						<h4><a href="#">进口柠檬</a></h4>
 						<div class="prize">￥3.90</div>
 					</li>
 					<li>
-						<a href="#"><img src="images/goods/goods002.jpg"></a>
+						<a href="#"><img src="/static/images/goods/goods002.jpg"></a>
 						<h4><a href="#">玫瑰香葡萄</a></h4>
 						<div class="prize">￥16.80</div>
 					</li>
@@ -152,7 +151,7 @@
 	</div>
 	<div class="add_jump"></div>
 
-	<script type="text/javascript" src="js/jquery-1.12.2.js"></script>
+	<script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
 	<script type="text/javascript">
 		var $add_x = $('#add_cart').offset().top;
 		var $add_y = $('#add_cart').offset().left;
@@ -162,6 +161,8 @@
 
 		$(".add_jump").css({'left':$add_y+80,'top':$add_x+10,'display':'block'})
 		$('#add_cart').click(function(){
+		    $.get("/cart/good_data/",{'good_id':1,'user_id':1})
+
 			$(".add_jump").stop().animate({
 				'left': $to_y+7,
 				'top': $to_x+7},
@@ -169,6 +170,7 @@
 					$(".add_jump").fadeOut('fast',function(){
 						$('#show_count').html(2);
 					});
+
 
 			});
 		})

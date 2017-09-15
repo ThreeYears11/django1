@@ -1,55 +1,68 @@
-from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
-# from .models import *
-from tt_goods.models import GoodsInfo
-from tt_user.models import *
-from .models import OrderInfo, OrderDetailInfo
 import time
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
+from tt_cart.models import *
+from .models import *
+from django.db import transaction
 
 
 # Create your views here.
-def place_order(request):
-    id = request.GET.get('id')
-    order = OrderInfo.objects.get(oid=id)
-    goods = order.orderdetailinfo_set.all()
-    phone = order.user.useraddressinfo_set.all()[0]
-    content = {'user': order, 'phone': phone, 'goods': goods, 'oid': id}
-    return render(request, "tt_order/place_order.html", content)
-
-
-def order_add(request):
-    uid = 1
-    gid = request.POST.get('goodsid')
-    count = request.POST.get('count')
-    addr = UserAddressInfo.objects.get(user_id=uid)
-    a = OrderInfo()
-    dt = time.time()
-    time_local = time.localtime(dt)
-    dt = time.strftime("%Y%m%d%H%M%S", time_local)
-    a.oid = str(dt) + str(uid)
-    a.user = UserInfo.objects.get(id=uid)
-    a.ototal = 0
-    a.oaddress = addr.uaddress
-    a.save()
-    gid = gid.split(',')
-    gid.remove('')
-    for g in gid:
-        b = OrderDetailInfo()
-        b.goods = GoodsInfo.objects.get(id=g)
-        b.order = OrderInfo.objects.get(oid=a.oid)
-        b.price = GoodsInfo.objects.get(id=g).gprice
-        b.count = count
-        b.save()
-    return JsonResponse({'oid': a.oid})
+@transaction.atomic
+def index(request):
+    car_id_list = request.POST.getlist('cid')
+    if not car_id_list:
+        car_id_list = request.GET.getlist('cid')
+    print(car_id_list)
+    # car_id_list = [15, 16]
+    total = 0
+    flag = True
+    flag1 = True
+    sid = transaction.savepoint()
+    for car_id in car_id_list:
+        car_id = str(car_id)
+        car = CartInfo.objects.get(id=car_id)
+        time_now = int(time.time())
+        time_local = time.localtime(time_now)
+        dt = time.strftime("%Y%m%d%H%M%S", time_local)
+        oid = dt + str(car.user_id)
+        if flag:
+            order = OrderInfo()
+            order.oid = oid
+            order.user_id = car.user_id
+            order.ototal = total
+            order.oaddress = 'abcdef'
+            order.save()
+            flag = False
+        od = OrderDetailInfo()
+        od.goods_id = car.goods.id
+        od.order_id = oid
+        od.price = car.goods.gprice
+        od.count = car.count
+        if od.count > car.goods.gkucun:
+            flag1 = False
+            break
+        # print(od.goods_id, od.order_id, od.price, od.count)
+        od.goods.gkucun -= od.count
+        od.goods.save()
+        od.save()
+        # car.delete()
+        total += od.price * od.count
+    if flag1:
+        order.ototal = total
+        print(order.ototal)
+        order.save()
+        transaction.savepoint_commit(sid)
+    else:
+        transaction.savepoint_rollback(sid)
+        return redirect('/cart/center/')
+    content = {'order': order}
+    return render(request, 'tt_order/place_order.html', content)
 
 
 def submit(request):
+    print('123123123123')
     oid = request.POST.get('oid')
-    ototal = request.POST.get('ototal')
-    print(float(ototal))
-    order = OrderInfo.objects.get(oid=oid)
-    order.oIsPay = 1
-    order.ototal = ototal
-    order.save()
-    print('111')
-    return HttpResponse('ok')
+    o = OrderInfo.objects.get(oid=oid)
+    o.oIsPay = 1
+    o.save()
+    return HttpResponse('<a href="/">付款成功,点击继续购物</a>')
