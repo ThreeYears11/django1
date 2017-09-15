@@ -173,9 +173,11 @@
         var gpric = $(".show_pirze").attr("values");
 
 		$('#add_cart').click(function(){
+		     goods_num = $('.num_show').attr('value')
 		    if($(".num_show").attr("value")=="0"){
 					        return
                         }
+            $.get('/cart/good_data',{'goods_num':goods_num,'goods_id':'{{detail_goods.id}}'})
 		    $(".add_jump").css({'left':$add_y+80,'top':$add_x+10,'display':'block'});
 			$(".add_jump").stop().animate({
 

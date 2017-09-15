@@ -8,6 +8,7 @@
         $(function(){
             $(".add_goods").click(function () {
                 var goods_id = $(this).attr("value");
+                $.get("/cart/good_data/",{"goods_id":goods_id,"goods_num":"1"});
                 location.href = "/cart/center/?goods_id="+goods_id+"&goods_num=1"
             })
         })
