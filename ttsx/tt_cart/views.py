@@ -9,28 +9,28 @@ from django.db.models import Q
 
 # Create your views here.
 
-def detail(request):
-    return render(request,'tt_cart/detail.html')
 def good_data(request):
     #从detail页面获得数据 构造对象
-    good_id = request.GET.get('good_id')
-    user_id = request.GET.get('user_id')
-    good = GoodsInfo.objects.get(id=good_id)
-    user = UserInfo.objects.get(id=user_id)
-    cart_list = CartInfo.objects.filter(user_id=user_id)
+    goods_id = request.GET.get('goods_id')
+    goods_num = request.GET.get('goods_num')
+    print(goods_id,goods_num)
+    # user_id = request.GET.get('user_id')
+    good = GoodsInfo.objects.get(id=goods_id)
+    user = UserInfo.objects.get(id=1)
+    cart_list = CartInfo.objects.filter(user_id=1)
     #如果商品存在 修改数量不构造对象
     for cart in cart_list:
-        if cart.goods_id == int(good_id):
-            cart.count += 1
+        if cart.goods_id == int(goods_id):
+            cart.count += int(goods_num)
             cart.save()
-            return
+            return JsonResponse({'cid':cart.id})
 
     cart = CartInfo()
     cart.user = user
     cart.goods = good
     cart.count = 1
     cart.save()
-    return HttpResponse('ok')
+    return JsonResponse({'cid':cart.id})
 def center(request):
     cart_list = CartInfo.objects.filter(user_id=1)
     context = {'cart_list':cart_list}
