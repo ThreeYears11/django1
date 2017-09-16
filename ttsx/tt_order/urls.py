@@ -4,5 +4,6 @@ from .views import *
 
 urlpatterns = [
     url('^place_order/$', index),
-    url('^submit/$', submit)
+    url('^submit/$', submit),
+    url('^order/$', order),
 ]

@@ -65,3 +65,10 @@ def submit(request):
     o.oIsPay = 1
     o.save()
     return HttpResponse('<a href="/">付款成功,点击继续购物</a>')
+
+
+def order(request):
+    oid = request.GET.get('oid')
+    order = OrderInfo.objects.get(oid=oid)
+    content = {'order': order}
+    return render(request, 'tt_order/place_order.html', content)

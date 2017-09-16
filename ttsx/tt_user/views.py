@@ -16,6 +16,7 @@ from pymysql import *
 from django.conf import settings
 from django.core.mail import send_mail
 from . import task
+from tt_order.models import *
 
 
 # Create your views here.
@@ -188,9 +189,20 @@ def info(request):
 def show(request):
     return render(request,'tt_user/user_center_site.html')
 
+# 用户中心中的我的订单界面
 @is_login
 def order(request):
-    return render(request,'tt_user/user_center_order.html')
+    uid = request.session.get('uid')
+    orders_sort = OrderInfo.objects.filter(user_id=uid)
+    orders = orders_sort[::-1]
+
+    # order_no_pay = OrderInfo.objects.filter(user_id=uid).filter(oIsPay=0)
+    order_no_pay = OrderDetailInfo.objects.filter(order__user_id=uid).filter(order__oIsPay=0)
+    # orders = OrderDetailInfo.objects.filter(order__user_id=uid)
+    # order_pay = OrderInfo.objects.filter(user_id=uid).filter(oIsPay=1)
+    order_pay = OrderDetailInfo.objects.filter(order__user_id=uid).filter(order__oIsPay=1)
+    context = {'orders': orders, 'order_no_pay': order_no_pay, 'order_pay': order_pay}
+    return render(request,'tt_user/user_center_order.html', context)
 
 def show_user(request):
     name = request.COOKIES.get('name')
