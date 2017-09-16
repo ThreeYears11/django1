@@ -13,3 +13,4 @@ class UserAddressInfo(models.Model):
     uaddress = models.CharField(max_length=100)
     uphone = models.CharField(max_length=11)
     user = models.ForeignKey('UserInfo')
+

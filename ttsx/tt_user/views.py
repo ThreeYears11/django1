@@ -91,6 +91,15 @@ def verify_code(request):
     #将内存中的图片数据返回给客户端，MIME类型为图片png
     return HttpResponse(buf.getvalue(), 'image/png')
 
+def yzm(request):
+    return render(request,'tt_user/register.html')
+def yzm2(request):
+    yzm_value = request.GET.get('yzm_value')
+    print(yzm_value)
+    if yzm_value == request.session['verifycode']:
+        return JsonResponse({'pass':'ok'})
+    else:
+        return JsonResponse({'pass':'no'})
 
 def check_user(request):
     name = request.GET.get('user_name')
@@ -125,36 +134,6 @@ def check_login(request):
     else:
         return JsonResponse({'result':'0'})
 
-def denglu(request):
-    # 密码对不对
-    dict = request.POST
-    pwd = dict.get('pwd')
-    name = dict.get('username')
-    s1 = sha1()
-    s1.update(pwd.encode())
-    s_pwd = s1.hexdigest()
-
-    #　根据用户名在数据库找密码
-    user = UserInfo.objects.filter(upwd=s_pwd)
-    if user:
-        table_pwd = user[0].upwd
-        # 比对密码是否正确
-        if s_pwd == table_pwd:
-            # 如果密码正确
-            response = render(request,'tt_goods/index.html',{'name':name})
-            checkbox = dict.get('checked')
-            if checkbox == None:
-                response.delete_cookie('name')
-            else:
-                response.set_cookie('name',name, expires=15*24*60*60)
-            return response
-            # return render(request,'tt_goods/index.html',{'name':name})
-
-    else: # 如果密码不正确
-        # return redirect('/user/login/')
-        return render(request, 'tt_user/login.html',{'no':'密码有误'})
-
-
 def login_cookie(request):
     if request.COOKIES['name']:
         print(request.COOKIES['name'])
@@ -167,38 +146,82 @@ def site(request):
     name = dict.get('user_name')
     site_area = dict.get('site_area')
     phone = dict.get('phone')
-    if name or site_area or phone != None:
+    id = dict.get('adid')
+    print(id)
+    if id=='':
+
+        # 取出当前登录用户的cookie的名字
+        uname = request.COOKIES.get('name')
+        # 用名字取出对应的对象
+        userinfo = UserInfo.objects.filter(uname=uname)
         useraddr = UserAddressInfo()
         useraddr.uname = name
         useraddr.uaddress = site_area
         useraddr.uphone = phone
+        # 用户地址的外键属性等于用户对象
+        useraddr.user = userinfo[0]
         useraddr.save()
-        request.session['name'] = name
-        request.session['site_area'] = site_area
-        request.session['phone']= phone
-        request.session.set_expiry(None)
-    return redirect('/user/show/')
+        return redirect('/user/show/')
+    # xiugai
+    else:
+        useraddinfo = UserAddressInfo.objects.get(id=id)
+        useraddinfo.uname = name
+        useraddinfo.uaddress = site_area
+        useraddinfo.uphone = phone
+        useraddinfo.save()
+        data = '<span style="display: none">1</span>&nbsp;%s&nbsp;&nbsp;&nbsp;(%s&nbsp;收)&nbsp;&nbsp;&nbsp;%s&nbsp;&nbsp;&nbsp;<a href="#" class="a">修改</a><label></label>' % (
+        site_area, name, phone)
+        request.session['data'] = data
+        return redirect('/user/show/')
+
+    # return render(request,'tt_user/user_center_site.html')
 
 def show(request):
-    name = request.session.get('name')
-    site_area = request.session.get('site_area')
-    phone = request.session.get('phone')
-    str = '%s (%s) %s' % (site_area, name, phone)
-    return render(request, 'tt_user/user_center_site.html', {'str': str})
-#
-# def site_list(request):
-#     useraddr = UserAddressInfo.objects.all()
-#     if useraddr:
-#         list = []
-#         for i in useraddr:
-#             name = i.uname
-#             addr = i.uaddress
-#             phone = i.uphone
-#             str = '%s (%s) %s' % (addr, name, phone)
-#             list.append({'str':str})
-#     else:
-#         list = ''
-#         # context = {'list':list}
-#         # render(request,'tt_user/user_center_site.html',context)
-#     return JsonResponse({'list':list})
+    return render(request,'tt_user/user_center_site.html')
 
+def show_user(request):
+    name = request.COOKIES.get('name')
+    return JsonResponse({'name':name})
+
+def add_addr(request):
+    print('青青')
+    name = request.COOKIES.get('name')
+    useraddr = UserAddressInfo.objects.filter(user__uname=name)
+    list = []
+    for addr in useraddr:
+        list.append({'name':addr.uname,'addr':addr.uaddress,'num':addr.uphone,'id':addr.id})
+    return JsonResponse({'list':list})
+
+def current(request):
+    data = request.GET.get('data')
+    request.session['data'] = data
+    print(data)
+    request.session.set_expiry(None)
+    return JsonResponse({'isok':'true'})
+
+def site_cur(request):
+    data = request.session.get('data')
+    return JsonResponse({'data':data})
+
+
+def xiugai(request):
+    userad = request.GET
+    ad_id = userad.get('ad_id')
+    useraddinfo = UserAddressInfo.objects.get(id=ad_id)
+    uname = useraddinfo.uname
+    uaddress = useraddinfo.uaddress
+    uphone = useraddinfo.uphone
+    return  JsonResponse({'uuname':uname,'uaddress':uaddress,'uphone':uphone})
+
+def info(request):
+    return render(request,'tt_user/user_center_info.html')
+
+def denglu(request):
+    dict = request.POST
+    name = dict.get('username')
+    pwd = dict.get('pwd')
+    user = UserInfo.objects.filter(uname=name)
+    if user:
+        s1 = sha1()
+        s1.update(s1.encode('utf-8'))
+        

@@ -18,6 +18,12 @@
                 user.show();
                 $('.login_btn').hide();
             }
+            $.get('/user/show_user/', function (data) {
+            $('.login_btn').hide();
+            $('.login_info').children().html(data.name);
+            $('.login_info').show();
+
+            })
 
         })
 
@@ -39,7 +45,7 @@
 				</div>
 				<div class="user_link fl">
 					<span>|</span>
-					<a href="user_center_info.html">用户中心</a>
+					<a href="/user/info/">用户中心</a>
 					<span>|</span>
 					<a href="cart.html">我的购物车</a>
 					<span>|</span>
@@ -281,9 +287,9 @@
 		<p>CopyRight © 2016 北京天天生鲜信息技术有限公司 All Rights Reserved</p>
 		<p>电话：010-****888    京ICP备*******8号</p>
 	</div>
-	<script type="text/javascript" src="js/slideshow.js"></script>
+{#	<script type="text/javascript" src="js/slideshow.js"></script>#}
 	<script type="text/javascript">
-		BCSlideshow('focuspic');
+{#		BCSlideshow('focuspic');#}
 		var oFruit = document.getElementById('fruit_more');
 		var oShownum = document.getElementById('show_count');
 

@@ -5,11 +5,14 @@ $(function(){
 	var error_check_password = false;
 	var error_email = false;
 	var error_check = false;
-
+	var error_yzm = false
 
 	$('#user_name').blur(function() {
 		check_user_name();
 	});
+	$('#vyzm').blur(function () {
+		check_yzm()
+    })
 
 	$('#pwd').blur(function() {
 		check_pwd();
@@ -37,12 +40,25 @@ $(function(){
 		}
 	});
 
-
+    function check_yzm() {
+		var yzm_value = $('#vyzm').val()
+		$.get('/user/yzm2/',{'yzm_value':yzm_value},function (data) {
+			var pass = data.pass
+			if (pass == 'no') {
+				$('#vyzm').next().html('验证码错误')
+				$('#vyzm').next().show()
+				error_yzm = true
+			}else {
+				$('#vyzm').next().hide()
+				error_yzm = false
+			}
+        })
+    }
 	function check_user_name(){
 		var len = $('#user_name').val().length;
 		if(len<5||len>20)
 		{
-			$('#user_name').next().html('请输入5-20个字符的用户名')
+			$('#user_name').next().html('请输入5-20个字符的用户名');
 			$('#user_name').next().show();
 			error_name = true;
 		}
@@ -110,8 +126,9 @@ $(function(){
 		check_pwd();
 		check_cpwd();
 		check_email();
+		check_yzm()
 
-		if(error_name == false && error_password == false && error_check_password == false && error_email == false && error_check == false)
+		if(error_name == false && error_password == false && error_check_password == false && error_email == false && error_check == false && error_yzm == false)
 		{
 			return true;
 		}
