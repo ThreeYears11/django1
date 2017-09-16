@@ -1,5 +1,4 @@
 import time
-
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from tt_cart.models import *
@@ -46,7 +45,7 @@ def index(request):
         od.goods.gkucun -= od.count
         od.goods.save()
         od.save()
-        # car.delete()
+        car.delete()
         total += od.price * od.count
     if flag1:
         order.ototal = total
@@ -61,7 +60,6 @@ def index(request):
 
 
 def submit(request):
-    print('123123123123')
     oid = request.POST.get('oid')
     o = OrderInfo.objects.get(oid=oid)
     o.oIsPay = 1
