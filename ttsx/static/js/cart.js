@@ -13,19 +13,16 @@
 
 
             $('.cart_con ul').each(function () {
-
-                // {# 删除的点击效果 #}
+                // 删除的点击效果
                 $('.cart_list_td .col08 a').click(function () {
-
                     var good_id = $(this).parent().siblings('.good_id').html()
                     $.get('/cart/delete_data/',{'good_id':good_id,'user_id':1})
-                    $(this).parent().parent().hide()
-                    $(this).parent().siblings('.col01').children().prop('checked',false)
-                    // {# 结算金额 #}
-                    var n = 0
-                    var n2 = 0
+                    $(this).parent().parent().remove()
                     var all_price = 0
+                    var n1 = 0
+                    var n2 = 0
                     $('.cart_con ul').each(function () {
+                        // 计算结算金额
                         var fuhao = 0
                         var single_price = parseFloat($(this).find('.col07').html())
                         var a = $(this).children('.col01').children().prop('checked')
@@ -33,12 +30,12 @@
                             fuhao = 1
                         }
                         all_price += single_price*fuhao
-                        n += fuhao
-                        n2 += 1
+                        n1 += 1
+                        n2 += fuhao
                     })
-                    var a = $(this).parent().parent().parent().next().children('.col03').children('em').html(all_price.toFixed(2))
-                    $(this).parent().parent().parent().next().children('.col03').children('b').html(n)
-                    $('.total_count em').html(n2-1)
+                    $('.settlements .col03 em').html(all_price.toFixed(2))
+                    $('.total_count em').html(n1)
+                    $('.settlements .col03 b').html(n2)
                 })
 
                 var n = 0
@@ -46,7 +43,7 @@
                 var num = parseFloat($(this).find('.num_show').val())
                 var sum_price = price * num
                 $(this).find('.col07').html(sum_price.toFixed(2) + '元')
-                // {# check的点击效果 #}
+                //{# check的点击效果 #}
                 $(this).find('.col01').click(function () {
                     var str = 0
                     var n = 0
