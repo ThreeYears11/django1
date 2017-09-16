@@ -7,18 +7,7 @@
     <link rel="stylesheet" type="text/css" href="/static/css/reset.css">
     <link rel="stylesheet" type="text/css" href="/static/css/main.css">
     <script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
-    <script>
-{#        $(function () {#}
-{#            $.get('/user/site_list/', function (data) {#}
-{#                var list = data.list;#}
-{#                var site = $('.site_list');#}
-{#                $.each(list,function (i,n) {#}
-{#                    site.append('<li><input type="checkbox" name="checked" id="check"><label>'+n.str+'</label></li>');#}
-{#                })#}
-{#            })#}
-{#        })#}
-
-    </script>
+    <script src="/static/js/site_area.js"></script>
 </head>
 <body>
 <div class="header_con">
@@ -26,20 +15,20 @@
         <div class="welcome fl">欢迎来到天天生鲜!</div>
         <div class="fr">
             <div class="login_info fl">
-                欢迎您：<em>张 山</em>
+                欢迎您：<em>张山</em>
             </div>
             <div class="login_btn fl">
-                <a href="login.html">登录</a>
+                <a href="/user/login/">登录</a>
                 <span>|</span>
-                <a href="register.html">注册</a>
+                <a href="/user/register/">注册</a>
             </div>
             <div class="user_link fl">
                 <span>|</span>
-                <a href="user_center_info.html">用户中心</a>
+                <a href="/user/info/">用户中心</a>
                 <span>|</span>
-                <a href="cart.html">我的购物车</a>
+                <a href="/tt_cart/cart.html">我的购物车</a>
                 <span>|</span>
-                <a href="user_center_order.html">我的订单</a>
+                <a href="/tt_order/user_center_order.html">我的订单</a>
             </div>
         </div>
     </div>
@@ -58,9 +47,9 @@
     <div class="left_menu_con clearfix">
         <h3>用户中心</h3>
         <ul>
-            <li><a href="user_center_info.html">· 个人信息</a></li>
+            <li><a href="/user/info/">· 个人信息</a></li>
             <li><a href="user_center_order.html">· 全部订单</a></li>
-            <li><a href="user_center_site.html" class="active">· 收货地址</a></li>
+            <li><a href="/user/show/" class="active">· 收货地址</a></li>
         </ul>
     </div>
     <div class="right_content clearfix">
@@ -68,42 +57,44 @@
         <div class="site_con">
             <dl>
                 <dt>当前地址：</dt>
-                {#						<dd>北京市 海淀区 东北旺西路8号中关村软件园 （李思 收） 182****7528</dd>#}
-                <dd>{{ str }}</dd>
+{#                <dd class="current">北京市 海淀区 东北旺西路8号中关村软件园 （李思 收） 182****7528</dd>#}
+                <dd class="current"></dd>
             </dl>
+
+                <dt>已保存如下地址</dt>
+                <dl class="addrlist"></dl>
+
         </div>
+
 
 
         <h3 class="common_title2">编辑地址</h3>
         <div class="site_con">
             <form method="post" action="/user/site/" id="site">
                 <div class="form_group">
-                    <label>收件人：</label>
-                    <input type="text" name="user_name">
+                    <label >收件人：</label>
+                    <input type="text" name="user_name" id="user">
                 </div>
                 <div class="form_group form_group2">
-                    <label>详细地址：</label>
-                    <textarea class="site_area" name="site_area"></textarea>
+                    <label >详细地址：</label>
+                    <textarea class="site_area" name="site_area" id='area'></textarea>
                 </div>
                 <div class="form_group">
                     <label>邮编：</label>
-                    <input type="text" name="">
+                    <input type="text" name="" >
                 </div>
                 <div class="form_group">
-                    <label>手机：</label>
-                    <input type="text" name="phone">
+                    <label >手机：</label>
+                    <input type="text" name="phone" id="num">
+                </div>
+                <div class="form_group">
+                    <input type="hidden" name="adid" id="adid">
                 </div>
 
-                <input type="submit" name="" value="提交" class="info_submit">
+                <input type="submit" name="id" value="提交" class="info_submit">
             </form>
 
-            <h1 style="font-size: 20px">已保存如下地址</h1>
-            <ul class="site_list">
-                <li>
-                    <input type="checkbox" name="checked" id="check">
-                    <label>记住用户名</label>
-                </li>
-            </ul>
+
         </div>
     </div>
 </div>

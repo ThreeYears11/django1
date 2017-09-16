@@ -4,59 +4,8 @@
 {% endblock title%}
 
 {% block head %}
-    <script>
-        $(function () {
-            var name = $('.name_input');
-            var pwd = $('.pass_input');
-            var name_val = name.val();
-            name.blur(function () {
-                var name_val = name.val();
-                $.get('/user/login_login/',{'name':name_val},function (data) {
-                    if (name_val==''){
-                        name.next().html('用户名不能为空');
-			            name.next().show();
-                    }
-                    else if(data['result']=='0'){
-                        name.next().html('用户名不存在');
-			            name.next().show();
-
-                    }
-                });
-            });
-
-            $.get('/user/user_cookie/',function (data) {
-                if(data.cookie=='no'){
-                    name.val('')
-                }else {
-                    name.val(data['cookie'])
-                }
-            });
-
-            pwd.blur(function () {
-                var pwd_val = pwd.val();
-                if(pwd_val==''){
-                    pwd.next().html('密码不能为空');
-                    pwd.next().show();
-                }
-            });
-
-            name.focus(function () {
-                name.next().hide();
-            });
-
-
-            pwd.next().show();
-
-            pwd.focus(function () {
-                pwd.next().hide();
-            });
-
-        });
-
-
-    </script>
+    <script src="/static/js/login.js"></script>
 {% endblock head%}
-
 
 {% block body %}
 
@@ -75,11 +24,12 @@
 				</div>
 
 				<div class="form_input">
-					<form method="post" id="myform" action="/user/denglu/">
-						<input type="text" name="username" class="name_input" placeholder="请输入用户名">
+					<form method="post" id="myform" action="/user/denglu/" class="myform">
+						<input type="text" name="username" class="name_input" id="username" placeholder="请输入用户名">
 						<div class="user_error">输入错误</div>
-						<input type="password" name="pwd" class="pass_input" placeholder="请输入密码">
-						<div class="pwd_error">{{ no }}</div>
+						<input type="password" name="pwd" class="pass_input" id="pwd" placeholder="请输入密码">
+						<div class="pwd_error">密码有误</div>
+
 						<div class="more_input clearfix">
 							<input type="checkbox" name="checked" checked="checked" id="check">
 							<label>记住用户名</label>
