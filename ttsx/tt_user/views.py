@@ -7,6 +7,8 @@ from django.http import HttpResponseRedirect,HttpResponse,JsonResponse
 from datetime import date
 from django.shortcuts import render,redirect,HttpResponseRedirect
 from django.http import HttpResponse,JsonResponse
+
+from .user_decorators import *
 from . models import *
 from hashlib import *
 from PIL import Image, ImageDraw, ImageFont
@@ -45,7 +47,9 @@ def active(request,uid):
 
 
 def login(request):
-    return render(request,'tt_user/login.html')
+    name = request.COOKIES.get('uname')
+    context = {'uname':name}
+    return render(request,'tt_user/login.html',context)
 
 def verify_code(request):
     #引入随机函数模块
@@ -176,8 +180,17 @@ def site(request):
 
     # return render(request,'tt_user/user_center_site.html')
 
+@is_login
+def info(request):
+    return render(request,'tt_user/user_center_info.html')
+
+@is_login
 def show(request):
     return render(request,'tt_user/user_center_site.html')
+
+@is_login
+def order(request):
+    return render(request,'tt_user/user_center_order.html')
 
 def show_user(request):
     name = request.COOKIES.get('name')
@@ -203,7 +216,6 @@ def site_cur(request):
     data = request.session.get('data')
     return JsonResponse({'data':data})
 
-
 def xiugai(request):
     userad = request.GET
     ad_id = userad.get('ad_id')
@@ -213,15 +225,39 @@ def xiugai(request):
     uphone = useraddinfo.uphone
     return  JsonResponse({'uuname':uname,'uaddress':uaddress,'uphone':uphone})
 
-def info(request):
-    return render(request,'tt_user/user_center_info.html')
 
 def denglu(request):
+    if request.method == "GET":
+        return redirect('/user/login/')
     dict = request.POST
     name = dict.get('username')
     pwd = dict.get('pwd')
+    remeber = dict.get('remeber','0')
+    context = { 'uname': name, 'upwd': pwd, 'uname_error': 0, 'upwd_error': 0}
     user = UserInfo.objects.filter(uname=name)
     if user:
         s1 = sha1()
-        s1.update(s1.encode('utf-8'))
-        
+        s1.update(pwd.encode('utf-8'))
+        spwd = s1.hexdigest()
+        if spwd == user[0].upwd:
+            if user[0].isActive:
+                response = redirect('/')
+                # 记住用户名
+                if remeber == '1':
+                    response.set_cookie('uname',name,expires=14*24*60*60)
+                else:
+                    response.set_cookie('uname','',expires=-1)
+
+                request.session['uid'] = user[0].id
+                request.session['uname'] = name
+                return response
+            else:
+                return HttpResponse('账户未激活，请前往注册邮箱激活')
+        else:
+            context['upwd_error'] = 1
+            return render(request,'tt_user/login.html',context)
+    else:
+        context['uname_error'] = 1
+        return render(request,'tt_user/login.html',context)
+
+
