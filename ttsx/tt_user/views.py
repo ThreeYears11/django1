@@ -224,4 +224,6 @@ def denglu(request):
     if user:
         s1 = sha1()
         s1.update(s1.encode('utf-8'))
-        
+
+def order(request):
+    return render(request,'tt_user/user_center_order.html')
