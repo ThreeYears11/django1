@@ -9,7 +9,8 @@ from random import randint
 
 def index(request):
     # 获取水果
-    goods_list1 = TypeInfo.objects.get(id=1).goodsinfo_set.filter(pk__in=[1, 184, 185, 186])
+    goods_list1 = TypeInfo.objects.get(id=1).goodsinfo_set.filter(pk__in=[1, 182, 183, 184])
+    print(goods_list1)
     # 海鲜水产
     goods_list2 = TypeInfo.objects.get(id=2).goodsinfo_set.filter(pk__in=[31, 47, 58, 59])
     # 猪牛羊肉
@@ -28,7 +29,7 @@ def index(request):
               "goods_list5": goods_list5,
               "goods_list6": goods_list6,
               }
-    print(goods_list1)
+    # print(goods_list1)
     return render(request, "tt_goods/index.html", contex)
 
 
