@@ -7,4 +7,5 @@ urlpatterns = [
     url(r'^change_data1/$',views.change_data1),
     url(r'^change_data2/$',views.change_data2),
     url(r'^delete_data/$',views.delete_data),
+    url(r'^count/$',views.count)
 ]

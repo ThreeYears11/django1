@@ -45,6 +45,9 @@
                 $(this).find('.col07').html(sum_price.toFixed(2) + '元')
                 //{# check的点击效果 #}
                 $(this).find('.col01').click(function () {
+                    var len1 = $(':checkbox:not(#check_all)').length
+                    var len2 = $(':checked:not(#check_all)').length
+                    $('#check_all').prop('checked',len1==len2)
                     var str = 0
                     var n = 0
                     $('.cart_con ul').each(function () {

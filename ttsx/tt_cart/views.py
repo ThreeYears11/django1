@@ -6,20 +6,16 @@ from tt_goods.models import *
 from tt_cart.models import *
 from tt_user.models import *
 from django.db.models import Q
-
+from tt_user.user_decorators import *
 # Create your views here.
-
+@is_login
 def good_data(request):
     #从detail页面获得数据 构造对象
     goods_id = request.GET.get('goods_id')
     goods_num = request.GET.get('goods_num')
-    print(goods_id,goods_num)
-    # user_id = request.GET.get('user_id')
+    userid = request.session.get('uid')
     good = GoodsInfo.objects.get(id=goods_id)
-    print("112")
-    user = UserInfo.objects.filter(id=1)
-    print(123)
-    cart_list = CartInfo.objects.filter(user_id=1)
+    cart_list = CartInfo.objects.filter(user_id=userid)
     #如果商品存在 修改数量不构造对象
     print(cart_list)
     for cart in cart_list:
@@ -28,11 +24,12 @@ def good_data(request):
             cart.save()
             return JsonResponse({'cid':cart.id})
     cart = CartInfo()
-    cart.user = user
+    cart.user_id = userid
     cart.goods = good
-    cart.count = 1
+    cart.count = int(goods_num)
     cart.save()
     return JsonResponse({'cid':cart.id})
+@is_login
 def center(request):
     cart_list = CartInfo.objects.filter(user_id=1)
     context = {'cart_list':cart_list}
@@ -67,3 +64,7 @@ def delete_data(request):
     for cart in cart_li:
         cart.delete()
     return HttpResponse('ok')
+
+def count(request):
+    c = CartInfo.objects.filter(user_id=request.session.get('uid')).count()
+    return JsonResponse({'count':c})

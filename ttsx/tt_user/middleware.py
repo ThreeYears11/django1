@@ -24,6 +24,7 @@
     url(r'^order/$',views.order),
     url(r'^logout/$',views.logout),
     url(r'^check_yzm/$',views.check_yzm),
+
 """
 class GetPathMiddleware():
     def process_view(self,request,vies_func,vies_args,vies_kwargs):
@@ -46,6 +47,7 @@ class GetPathMiddleware():
             '/user/add_addr/',
             '/user/current/',
             '/user/site_cur/',
+            '/cart/goods_data/',
 
         ]
         if request.path not in no_path and 'active' not in request.path:
