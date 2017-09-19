@@ -35,8 +35,10 @@
 	<div class="search_bar clearfix">
 		<a href="index.html" class="logo fl"><img src="/static/images/logo.png"></a>
 		<div class="search_con fl">
-			<input type="text" class="input_text fl" name="" placeholder="搜索商品">
-			<input type="button" class="input_btn fr" name="" value="搜索">
+			<form action="/search/" method="get">
+			<input type="text" class="input_text fl" name="q" placeholder="搜索商品">
+			<input type="submit" class="input_btn fr" name="" value="搜索">
+            </form>
 		</div>
 		<div class="guest_cart fr">
 			<a href="#" class="cart_name fl">我的购物车</a>
@@ -50,12 +52,12 @@
 				<h1>全部商品分类</h1>	
 				<span></span>			
 				<ul class="subnav">
-					<li><a href="/list1/" class="fruit">新鲜水果</a></li>
-					<li><a href="/list2/" class="seafood">海鲜水产</a></li>
-					<li><a href="/list3/" class="meet">猪牛羊肉</a></li>
-					<li><a href="/list4/" class="egg">禽类蛋品</a></li>
-					<li><a href="/list5/" class="vegetables">新鲜蔬菜</a></li>
-					<li><a href="/list6/" class="ice">速冻食品</a></li>
+					<li><a href="/list1/１_1" class="fruit">新鲜水果</a></li>
+					<li><a href="/list2/１_1" class="seafood">海鲜水产</a></li>
+					<li><a href="/list3/１_1" class="meet">猪牛羊肉</a></li>
+					<li><a href="/list4/１_1" class="egg">禽类蛋品</a></li>
+					<li><a href="/list5/１_1" class="vegetables">新鲜蔬菜</a></li>
+					<li><a href="/list6/１_1" class="ice">速冻食品</a></li>
 				</ul>
 			</div>
 			<ul class="navlist fl">
@@ -71,7 +73,7 @@
 	<div class="breadcrumb">
 		<a href="/reset/">全部分类</a>
 		<span>></span>
-		<a href="/list{{ goods_class.id }}/">{{ goods_class.ttitle }}</a>
+		<a href="/list{{ goods_class.id }}/1_1">{{ goods_class.ttitle }}</a>
 		<span>></span>
 		<a href="#">商品详情</a>
 	</div>
@@ -113,15 +115,15 @@
 {#						<h4><a href="#">{{ new_goods.g }}</a></h4>#}
 {#						<div class="prize">￥3.90</div>#}
 {#					</li>#}
-					<li>
-						<a href="#"><img src="/static/images/goods/goods002.jpg"></a>
-						<h4><a href="#">玫瑰香葡萄</a></h4>
-						<div class="prize">￥16.80</div>
-					</li>
+{#					<li>#}
+{#						<a href="#"><img src="/static/images/goods/goods002.jpg"></a>#}
+{#						<h4><a href="#">玫瑰香葡萄</a></h4>#}
+{#						<div class="prize">￥16.80</div>#}
+{#					</li>#}
                     {% for i in new_goods %}
                         <li>
-						<a href="#"><img src="/static/images/{{ i.gpic }}"></a>
-						<h4><a href="#">{{ i.gtitle }}</a></h4>
+						<a href="/detail{{listid}}/{{i.id}}"><img src="/static/images/{{ i.gpic }}"></a>
+						<h4><a href="/detail{{listid}}/{{i.id}}">{{ i.gtitle }}</a></h4>
 						<div class="prize">￥{{ i.gprice }}</div>
 					</li>
                     {% endfor %}
@@ -173,18 +175,13 @@
         var gpric = $(".show_pirze").attr("values");
 
 		$('#add_cart').click(function(){
-		     goods_num = $('.num_show').attr('value')
-		    if($(".num_show").attr("value")=="0"){
-					        return
-                        }
-            $.get('/cart/good_data',{'goods_num':goods_num,'goods_id':'{{detail_goods.id}}'});
-
-		    goods_num = $(".num_show").attr("value");
-		    if(goods_num=="0"){
+		     goods_num = $('.num_show').val();
+		    if($(".num_show").val()=="0"){
 					        return
                         }
 
-            $.get('/cart/good_data/',{"goods_num":goods_num,"goods_id":"{{detail_goods.id}}"});
+
+
 		    $(".add_jump").css({'left':$add_y+80,'top':$add_x+10,'display':'block'});
 			$(".add_jump").stop().animate({
 
@@ -195,34 +192,29 @@
 
 					$(".add_jump").fadeOut('slow',function(){
 
-					    s = s + parseInt($(".num_show").attr("value"));
 
-					    $("#show_count").attr("value",s);
-						$('#show_count').html(s);
-
-
+                    $.get('/cart/good_data',{'goods_num':goods_num,'goods_id':'{{detail_goods.id}}'},function (data) {
+                            $("#show_count").html(data.count)
+                        });
 					});
 
 			});
 		});
 		$(".add").click(function () {
-            $(".num_show").attr({"value":parseInt($(".num_show").attr("value"))+1});
-            sum = parseFloat(gpric*parseInt($(".num_show").attr("value"))).toFixed(2);
-            $(".total").html("总价：<em>"+sum+"</em>");
-
-
-
-            console.log("hahahahaha")
+            $(".num_show").val(parseInt($(".num_show").val())+1);
+            $(".total").html("总价：<em>"+parseInt({{detail_goods.gprice}})*parseInt($(".num_show").val())+"</em>");
 
         });$(".minus").click(function () {
-            if($(".num_show").attr("value")=="0"){
+            if($(".num_show").val()=="0"){
                 return
             }
-            $(".num_show").attr({"value":parseInt($(".num_show").attr("value"))-1});
-            sum = parseFloat(gpric*parseInt($(".num_show").attr("value"))).toFixed(2);
-            $(".total").html("总价：<em>"+sum+"</em>")
+            $(".num_show").val($(".num_show").val()-1)
+            $(".total").html("总价：<em>"+parseInt({{detail_goods.gprice}})*parseInt($(".num_show").val())+"</em>");
+        });
+        $(".num_show").blur(function () {
 
-
+            s = $(".total").html("总价：<em>"+parseInt({{detail_goods.gprice}})*parseInt($(".num_show").val())+"</em>");
+            console.log(s)
         });
         $(".my_cart").click(function () {
               location.href="/cart/center/";
@@ -234,19 +226,25 @@
 
         });$(".buy_btn").click(function () {
 
-            goods_sum = $(".num_show").attr("value");
+            goods_sum = $(".num_show").val();
             if(goods_sum=="0"){
 
                 alert("啊哦，请选择商品数量（づ￣3￣）づ╭❤～");
 
                 return false
             }
-            $.get('/cart/good_data/',{"goods_num":goods_num,"goods_id":"{{detail_goods.id}}"},function (data) {
+
+            $.get('/cart/good_data/',{"goods_num":goods_sum,"goods_id":"{{detail_goods.id}}"},function (data) {
                 location.href="http://127.0.0.1:8000/order/?cid="+data.cid
             });
 
 
+
+
         });
+        $.get("/cart/count/",function (data) {
+                $(".show_count").html(data.count)
+            })
     </script>
 	
 </body>

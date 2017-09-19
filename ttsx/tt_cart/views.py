@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from tt_goods.models import *
 from tt_cart.models import *
-from tt_user .models import *
+from tt_user.models import *
 from django.db.models import Q
 
 # Create your views here.
@@ -16,15 +16,17 @@ def good_data(request):
     print(goods_id,goods_num)
     # user_id = request.GET.get('user_id')
     good = GoodsInfo.objects.get(id=goods_id)
-    user = UserInfo.objects.get(id=1)
+    print("112")
+    user = UserInfo.objects.filter(id=1)
+    print(123)
     cart_list = CartInfo.objects.filter(user_id=1)
     #如果商品存在 修改数量不构造对象
+    print(cart_list)
     for cart in cart_list:
         if cart.goods_id == int(goods_id):
             cart.count += int(goods_num)
             cart.save()
             return JsonResponse({'cid':cart.id})
-
     cart = CartInfo()
     cart.user = user
     cart.goods = good
