@@ -17,6 +17,8 @@ from django.conf import settings
 from django.core.mail import send_mail
 from . import task
 from tt_order.models import *
+from tt_goods.models import *
+from django.core.paginator import Paginator
 
 
 # Create your views here.
@@ -183,7 +185,26 @@ def site(request):
 
 @is_login
 def info(request):
-    return render(request,'tt_user/user_center_info.html')
+    # 取出session中uname值传到页面备用
+    uid = request.session.get('uid')
+    # 取到当前用户的邮箱
+    current_user = UserInfo.objects.filter(id=uid)
+    name = current_user[0].uname
+    email = current_user[0].uemail
+    # 取出最近浏览的cookies
+    cookies = request.COOKIES.get("goods_zjll", "")
+    id_list = cookies.split(",")
+    good_list = []
+    context = {'gList': good_list, 'uname': name, 'email': email}
+    # 如果没有cookie
+    if cookies == '':
+        return render(request, 'tt_user/user_center_info.html', context)
+    else:
+        for g in id_list:
+            gid = int(g)
+            good = GoodsInfo.objects.filter(id=gid)
+            good_list.append(good[0])
+        return render(request, 'tt_user/user_center_info.html', context)
 
 @is_login
 def show(request):
@@ -191,17 +212,23 @@ def show(request):
 
 # 用户中心中的我的订单界面
 @is_login
-def order(request):
+def order(request, pIndex):
     uid = request.session.get('uid')
     orders_sort = OrderInfo.objects.filter(user_id=uid)
-    orders = orders_sort[::-1]
+    if pIndex == '':
+        pIndex = '1'
+    if len(orders_sort) == 0:
+        context = {'empty': 'yes'}
+    else:
+        orders = orders_sort[::-1]
+        order_no_pay = OrderDetailInfo.objects.filter(order__user_id=uid).filter(order__oIsPay=0)
+        order_pay = OrderDetailInfo.objects.filter(order__user_id=uid).filter(order__oIsPay=1)
 
-    # order_no_pay = OrderInfo.objects.filter(user_id=uid).filter(oIsPay=0)
-    order_no_pay = OrderDetailInfo.objects.filter(order__user_id=uid).filter(order__oIsPay=0)
-    # orders = OrderDetailInfo.objects.filter(order__user_id=uid)
-    # order_pay = OrderInfo.objects.filter(user_id=uid).filter(oIsPay=1)
-    order_pay = OrderDetailInfo.objects.filter(order__user_id=uid).filter(order__oIsPay=1)
-    context = {'orders': orders, 'order_no_pay': order_no_pay, 'order_pay': order_pay}
+        # 分页
+        paginator = Paginator(orders, 2)
+        pindexs = int(pIndex)
+        page = paginator.page(pindexs)
+        context = {'orders': page, 'order_no_pay': order_no_pay, 'order_pay': order_pay, 'empty': 'no', 'pIndex': pindexs}
     return render(request,'tt_user/user_center_order.html', context)
 
 def show_user(request):

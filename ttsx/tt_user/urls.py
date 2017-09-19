@@ -25,5 +25,5 @@ urlpatterns = [
     url(r'^site_cur/$',views.site_cur),
     url(r'^xiugai/$', views.xiugai),
     url(r'^info/$',views.info),
-    url(r'^order/$',views.order),
+    url(r'^order(?P<pIndex>[0-9]*)/$',views.order),
 ]

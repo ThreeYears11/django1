@@ -21,6 +21,9 @@
 		</div>
 		<div class="right_content clearfix">
             <h3 class="common_title2">全部订单</h3>
+        {% if empty == 'yes' %}
+            您还没有任何订单哦!
+        {% else %}
             {% for order in orders %}
 
                 {% if order.oIsPay == 0 %}
@@ -36,7 +39,7 @@
                                 {% for o in order_no_pay %}
                                     {% if o.order_id == order.oid %}
                                     <ul class="order_goods_list clearfix">
-									<li class="col01"><img src="/static/images/{{ o.goods.gpic }}"></li>
+									<li class="col01"><img src="/static/media/{{ o.goods.gpic }}"></li>
 									<li class="col02">{{ o.goods.gtitle }}<em>{{ o.goods.gprice }}元/{{ o.goods.gunit }}</em></li>
 									<li class="col03">{{ o.count }}</li>
 									<li class="col04">{{ o.goods.gprice }}元</li>
@@ -82,14 +85,36 @@
                 {% endif %}
 
             {% endfor %}
+
+        {% endif %}
+
 				<div class="pagenation">
-					<a href="#"><上一页</a>
-					<a href="#" class="active">1</a>
-					<a href="#">2</a>
-					<a href="#">3</a>
-					<a href="#">4</a>
-					<a href="#">5</a>
-					<a href="#">下一页></a>
+                    {% if orders.has_previous %}
+                        <a href="/user/order/">首页</a>
+                        <a href="/user/order{{ pIndex|add:-1 }}/">上一页</a>
+                    {% endif %}
+
+                    {%for pindex in orders.paginator.page_range %}
+                    {% if pIndex == pindex %}
+
+                        <a href="javascript:;" class="active">{{ pindex }}</a>
+                    {% else %}
+                        <a href="/user/order{{ pindex }}">{{ pindex }}</a>
+                    {%endif%}
+                    {%endfor%}
+
+                    {% if orders.has_next %}
+                        <a href="/user/order{{ pIndex|add:1 }}">下一页</a>
+                        <a href="/user/order{{ orders.paginator.num_pages }}/">末页</a>
+                    {% endif %}
+
+{#					<a href="#">上一页</a>#}
+{#					<a href="#" class="active">1</a>#}
+{#					<a href="#">2</a>#}
+{#					<a href="#">3</a>#}
+{#					<a href="#">4</a>#}
+{#					<a href="#">5</a>#}
+{#					<a href="#">下一页</a>#}
 				</div>
 		</div>
 	</div>
