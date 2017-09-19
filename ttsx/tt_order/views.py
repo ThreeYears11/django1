@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 from tt_cart.models import *
 from .models import *
 from django.db import transaction
+from tt_user.user_decorators import *
 
 
 # Create your views here.
@@ -66,7 +67,7 @@ def submit(request):
     o.save()
     return HttpResponse('<a href="/">付款成功,点击继续购物</a>')
 
-
+@is_login
 def order(request):
     oid = request.GET.get('oid')
     order = OrderInfo.objects.get(oid=oid)

@@ -6,9 +6,10 @@ from tt_goods.models import *
 from tt_cart.models import *
 from tt_user .models import *
 from django.db.models import Q
+from tt_user.user_decorators import *
 
 # Create your views here.
-
+@is_login
 def good_data(request):
     #从detail页面获得数据 构造对象
     goods_id = request.GET.get('goods_id')
@@ -31,6 +32,9 @@ def good_data(request):
     cart.count = 1
     cart.save()
     return JsonResponse({'cid':cart.id})
+
+
+@is_login
 def center(request):
     cart_list = CartInfo.objects.filter(user_id=1)
     context = {'cart_list':cart_list}
