@@ -177,7 +177,12 @@
 		    if($(".num_show").attr("value")=="0"){
 					        return
                         }
-            $.get('/cart/good_data',{'goods_num':goods_num,'goods_id':'{{detail_goods.id}}'});
+            $.get('/cart/good_data',{'goods_num':goods_num,'goods_id':'{{detail_goods.id}}'},function (data) {
+                if (data.login == 1) {
+
+                    location.href = '/user/login/'
+                }
+            });
 
 		    goods_num = $(".num_show").attr("value");
 		    if(goods_num=="0"){
@@ -243,6 +248,8 @@
             }
             $.get('/cart/good_data/',{"goods_num":goods_sum,"goods_id":"{{detail_goods.id}}"},function (data) {
                 location.href="http://127.0.0.1:8000/order/place_order/?cid="+data.cid.toString()
+
+
             });
 
 

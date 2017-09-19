@@ -1,5 +1,6 @@
 #! /usr/bin/env python3
 # -*-coding: utf-8 -*-
+from django.http import JsonResponse
 from django.shortcuts import redirect
 
 def is_login(func):
@@ -7,6 +8,9 @@ def is_login(func):
         if request.session.get('uid'):
             return func(request,*args,**kwargs)
         else:
-            return redirect('/user/login/')
+            if request.is_ajax():
+                return JsonResponse({'login':1})
+            else:
+                return redirect('/user/login/')
     return fun
     
