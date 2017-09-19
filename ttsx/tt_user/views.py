@@ -18,39 +18,56 @@ from django.core.mail import send_mail
 from . import task
 
 
-# Create your views here.
+# Create your views here
+
+
+# 显示登录页
+# 注册页面
 def register(request):
     return render(request,'tt_user/register.html')
 
+# 获取注册信息并保存到数据库
 def register1(request):
+    if request.method == 'GET':
+        return redirect('/user/register/')
     dict = request.POST
     uname = dict.get('user_name')
     upwd = dict.get('pwd')
     email = dict.get('email')
-    s1 = sha1()
-    s1.update(upwd.encode())
-    sha_pwd = s1.hexdigest()
-    userinfo = UserInfo()
-    userinfo.uname = uname
-    userinfo.upwd = sha_pwd
-    userinfo.uemail = email
-    userinfo.save()
-    task.sendmail.delay(userinfo.id,email)
-    # return redirect('/user/login/')
-    return HttpResponse('用户注册成功，请到邮箱中激活')
+    username = UserInfo.objects.filter(uname=uname)
+    useremail = UserInfo.objects.filter(uemail=email)
+    if username or useremail:
+        if username:
+            return render(request,'tt_user/register.html',{'is_name':1})
+        else:
+            return render(request, 'tt_user/register.html', {'is_email': 1})
+    else:
+        s1 = sha1()
+        s1.update(upwd.encode())
+        sha_pwd = s1.hexdigest()
+        userinfo = UserInfo()
+        userinfo.uname = uname
+        userinfo.upwd = sha_pwd
+        userinfo.uemail = email
+        userinfo.save()
+        task.sendmail.delay(userinfo.id,email)
+        # return redirect('/user/login/')
+        return HttpResponse('用户注册成功，请到邮箱中激活')
 
+# 点击激活邮箱并且把数据库isActive改为true
 def active(request,uid):
     user = UserInfo.objects.get(id = uid)
     user.isActive = True
     user.save()
     return HttpResponse('激活成功, <a href="/user/login/">点击登录</a>')
 
-
+# 登录并显示记住用户名，没有记住的话显示空
 def login(request):
-    name = request.COOKIES.get('uname')
-    context = {'uname':name}
+    name = request.COOKIES.get('name','')
+    context = {'name':name}
     return render(request,'tt_user/login.html',context)
 
+# 做成验证码函数
 def verify_code(request):
     #引入随机函数模块
     import random
@@ -95,8 +112,11 @@ def verify_code(request):
     #将内存中的图片数据返回给客户端，MIME类型为图片png
     return HttpResponse(buf.getvalue(), 'image/png')
 
+# 显示验证码
 def yzm(request):
     return render(request,'tt_user/register.html')
+
+# 判断验证码是否正确
 def yzm2(request):
     yzm_value = request.GET.get('yzm_value')
     print(yzm_value)
@@ -105,22 +125,34 @@ def yzm2(request):
     else:
         return JsonResponse({'pass':'no'})
 
+# 注册时检查用户是否存在
 def check_user(request):
     name = request.GET.get('user_name')
     psw = UserInfo.objects.filter(uname=name)
+    print(psw)
     if psw:
+        print('yes')
         return JsonResponse({'check':'yes'})
     else:
+        print('no')
         return JsonResponse({'check':'no'})
 
+# 注册时检查邮箱是否存在
 def check_email(request):
     email = request.GET.get('email')
-    oEmail = UserInfo.objects.filter(uemail=email)
-    if oEmail:
+    count = UserInfo.objects.filter(uemail=email).count()
+    # count = UserInfo.objects.filter(uemail=email)
+    # print(count)
+    if count:
+        print(count)
+        print('yes')
         return JsonResponse({'check':'yes'})
     else:
+        print(count)
+        print('no')
         return JsonResponse({'check':'no'})
 
+# 登录时检查用户是否存在
 def check_login(request):
     # 这个函数只要判断用户名存不存在
     name = request.GET.get('name')
@@ -130,7 +162,7 @@ def check_login(request):
 
     # 如果存在
     # return JsonResponse({'result': '1'}) --> 代表存在
-    if oName:
+    if oName[0]:
         return JsonResponse({'result':'1'})
 
     # 如果不存在
@@ -138,20 +170,21 @@ def check_login(request):
     else:
         return JsonResponse({'result':'0'})
 
+# 登录cookie
 def login_cookie(request):
     if request.COOKIES['name']:
-        print(request.COOKIES['name'])
         return JsonResponse({'cookie':request.COOKIES['name']})
     else:
         return JsonResponse({'cookie':'no'})
 
+# 如果id没有的话就增加，否则就修改
 def site(request):
     dict = request.POST
     name = dict.get('user_name')
     site_area = dict.get('site_area')
     phone = dict.get('phone')
     id = dict.get('adid')
-    print(id)
+    cur_id = dict.get('cur_site_id')
     if id=='':
 
         # 取出当前登录用户的cookie的名字
@@ -173,31 +206,37 @@ def site(request):
         useraddinfo.uaddress = site_area
         useraddinfo.uphone = phone
         useraddinfo.save()
-        data = '<span style="display: none">1</span>&nbsp;%s&nbsp;&nbsp;&nbsp;(%s&nbsp;收)&nbsp;&nbsp;&nbsp;%s&nbsp;&nbsp;&nbsp;<a href="#" class="a">修改</a><label></label>' % (
-        site_area, name, phone)
-        request.session['data'] = data
-        return redirect('/user/show/')
+        if id == cur_id:
+            print('相等')
+            print(id,cur_id)
+            data = '<span style="display: none">%s</span>&nbsp;%s&nbsp;&nbsp;&nbsp;(%s&nbsp;收)&nbsp;&nbsp;&nbsp;%s&nbsp;&nbsp;&nbsp;<a href="#" class="a">修改</a><label></label>' % (
+            id,site_area, name, phone)
+            request.session['data'] = data
+            return redirect('/user/show/')
 
-    # return render(request,'tt_user/user_center_site.html')
+        else:
+            print('不相等')
+            print(id,cur_id)
+            return redirect('/user/show/')
 
+# 显示用户中心
 @is_login
 def info(request):
     return render(request,'tt_user/user_center_info.html')
 
+# 显示收货地址
 @is_login
 def show(request):
     return render(request,'tt_user/user_center_site.html')
 
+# 显示用户订单
 @is_login
 def order(request):
     return render(request,'tt_user/user_center_order.html')
 
-def show_user(request):
-    name = request.COOKIES.get('name')
-    return JsonResponse({'name':name})
 
+# 把登录的用户名对应的所有地址添加到已保存地址并显示
 def add_addr(request):
-    print('青青')
     name = request.COOKIES.get('name')
     useraddr = UserAddressInfo.objects.filter(user__uname=name)
     list = []
@@ -205,17 +244,19 @@ def add_addr(request):
         list.append({'name':addr.uname,'addr':addr.uaddress,'num':addr.uphone,'id':addr.id})
     return JsonResponse({'list':list})
 
+# 把当前地址添加到session
 def current(request):
     data = request.GET.get('data')
     request.session['data'] = data
-    print(data)
     request.session.set_expiry(None)
     return JsonResponse({'isok':'true'})
 
+# 从session取出当前地址显示
 def site_cur(request):
     data = request.session.get('data')
     return JsonResponse({'data':data})
 
+# 修改用户地址
 def xiugai(request):
     userad = request.GET
     ad_id = userad.get('ad_id')
@@ -225,7 +266,7 @@ def xiugai(request):
     uphone = useraddinfo.uphone
     return  JsonResponse({'uuname':uname,'uaddress':uaddress,'uphone':uphone})
 
-
+# 登录页面
 def denglu(request):
     if request.method == "GET":
         return redirect('/user/login/')
@@ -233,7 +274,11 @@ def denglu(request):
     name = dict.get('username')
     pwd = dict.get('pwd')
     remeber = dict.get('remeber','0')
-    context = { 'uname': name, 'upwd': pwd, 'uname_error': 0, 'upwd_error': 0}
+    yzm = dict.get('yzm_value')
+    context = { 'name': name, 'upwd': pwd, 'uname_error': 0, 'upwd_error': 0, 'yzm_error':0}
+    if yzm != request.session['verifycode']:
+        context['yzm_error']=1
+        return render(request,'tt_user/login.html',context)
     user = UserInfo.objects.filter(uname=name)
     if user:
         s1 = sha1()
@@ -241,12 +286,12 @@ def denglu(request):
         spwd = s1.hexdigest()
         if spwd == user[0].upwd:
             if user[0].isActive:
-                response = redirect('/')
+                response = redirect(request.session.get('url_path','/'))
                 # 记住用户名
                 if remeber == '1':
-                    response.set_cookie('uname',name,expires=14*24*60*60)
+                    response.set_cookie('name',name,expires=14*24*60*60)
                 else:
-                    response.set_cookie('uname','',expires=-1)
+                    response.set_cookie('name','',expires=-1)
 
                 request.session['uid'] = user[0].id
                 request.session['uname'] = name
@@ -259,6 +304,23 @@ def denglu(request):
     else:
         context['uname_error'] = 1
         return render(request,'tt_user/login.html',context)
+
+# 退出即清除session数据
+def logout(request):
+    del request.session['uid']
+    del request.session['uname']
+    del request.session['url_path']
+    del request.session['verifycode']
+    return redirect('/')
+
+# 当输入框失去焦点时判断验证码是否正确
+def check_yzm(request):
+    yzm = request.GET.get('yzm')
+    if yzm == request.session.get('verifycode'):
+        return JsonResponse({'yzm':'ok'})
+    else:
+        return JsonResponse({'yzm':'no'})
+
 
 
 

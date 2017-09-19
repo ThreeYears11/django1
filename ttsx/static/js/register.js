@@ -5,14 +5,14 @@ $(function(){
 	var error_check_password = false;
 	var error_email = false;
 	var error_check = false;
-	var error_yzm = false
+	var error_yzm = false;
 
 	$('#user_name').blur(function() {
 		check_user_name();
 	});
 	$('#vyzm').blur(function () {
 		check_yzm()
-    })
+    });
 
 	$('#pwd').blur(function() {
 		check_pwd();
@@ -64,10 +64,11 @@ $(function(){
 		}
 		else
 		{
-			$('#user_name').next().hide();
+			// $('#user_name').next().hide();
 			error_name = false;
 		}
 	}
+
 
 	function check_pwd(){
 		var len = $('#pwd').val().length;
@@ -91,7 +92,7 @@ $(function(){
 
 		if(pass!=cpass)
 		{
-			$('#cpwd').next().html('两次输入的密码不一致')
+			$('#cpwd').next().html('两次输入的密码不一致');
 			$('#cpwd').next().show();
 			error_check_password = true;
 		}
@@ -108,14 +109,14 @@ $(function(){
 
 		if(re.test($('#email').val()))
 		{
-			$('#email').next().hide();
+			// $('#email').next().hide();
 			error_email = false;
 		}
 		else
 		{
 			$('#email').next().html('你输入的邮箱格式不正确')
 			$('#email').next().show();
-			error_check_password = true;
+			error_email = true;
 		}
 
 	}
@@ -126,7 +127,7 @@ $(function(){
 		check_pwd();
 		check_cpwd();
 		check_email();
-		check_yzm()
+		check_yzm();
 
 		if(error_name == false && error_password == false && error_check_password == false && error_email == false && error_check == false && error_yzm == false)
 		{

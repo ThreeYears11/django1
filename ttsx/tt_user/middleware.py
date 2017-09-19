@@ -1,11 +1,7 @@
 #! /usr/bin/env python3
 # -*-coding: utf-8 -*-
-from django.conf.urls import url
-from . import views
-
-urlpatterns = [
-    # url(r'^show_user/$',views.show_user),
-    url(r'^verify_code/$',views.verify_code),
+"""
+   url(r'^verify_code/$',views.verify_code),
     url(r'^yzm/$',views.yzm),
     url(r'^yzm2/$',views.yzm2),
     url(r'^register/$', views.register),
@@ -28,4 +24,32 @@ urlpatterns = [
     url(r'^order/$',views.order),
     url(r'^logout/$',views.logout),
     url(r'^check_yzm/$',views.check_yzm),
-]
+"""
+class GetPathMiddleware():
+    def process_view(self,request,vies_func,vies_args,vies_kwargs):
+        no_path = [
+            '/user/register/',
+            '/user/register1/',
+            '/user/login/',
+            '/user/denglu/',
+            '/user/check_user/',
+            '/user/check_email/',
+            '/user/check_login/',
+            '/user/yzm/',
+            '/user/verify_code/',
+            '/user/check_yzm/',
+            '/user/yzm/',
+            '/user/yzm2/',
+            '/user/user_cookie/',
+            '/user/check_yzm/',
+            '/user/xiugai/',
+            '/user/add_addr/',
+            '/user/current/',
+            '/user/site_cur/',
+
+        ]
+        if request.path not in no_path and 'active' not in request.path:
+            request.session['url_path'] = request.get_full_path()
+
+
+    

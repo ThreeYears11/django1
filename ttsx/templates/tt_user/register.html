@@ -7,7 +7,7 @@
 	<script type="text/javascript" src="/static/js/register.js"></script>
     <script>
         $(function () {
-            $('.img').css('cursor','pointer').click(function () {
+            $('#img').css('cursor','pointer').click(function () {
                 $('#img').prop('src',$('#img').prop('src')+1)
             });
 
@@ -20,6 +20,8 @@
                         $('#user_name').next().html('用户名已存在');
 			            $('#user_name').next().show();
 			            sub = false;
+                    }else {
+                        sub = true;
                     }
                });
             });
@@ -31,29 +33,52 @@
                         $('#email').next().html('邮箱已存在');
 			            $('#email').next().show();
 			            num = 0;
+                    }else{
+                        num = 1;
                     }
 
+
                 });
             });
+
             $('#submit').click(function () {
+{#            $('.myform').submit(function() {#}
                 if(sub==false){
-                    $('.myform').submit(function () {
                     $('#user_name').next().html('用户名已存在');
                     $('#user_name').next().show();
-                    return false;
-                });
+                    error_name = true;
                 }
                 if(num==0){
-                    $('.myform').submit(function () {
                     $('#email').next().html('邮箱已存在');
                     $('#email').next().show();
-                    return false;
-                });
+                    error_email = true;
+
                 }
 
             });
+            $('#user_name').focus(function () {
+                $('#user_name').next().hide();
+            });
+            $('#pwd').focus(function () {
+                $('#pwd').next().hide();
+            });
+            $('#email').focus(function () {
+                $('#email').next().hide();
+            });
+            $('#vyzm').focus(function () {
+                $('#vyzm').next().hide();
+            });
 
-
+            if({{ is_name|default:0 }}==1){
+                $('#user_name').next().html('用户名已存在');
+                $('#user_name').next().show();
+                error_name = true;
+            }
+            if({{ is_email|default:0 }}==1){
+                $('#email').next().html('邮箱已存在');
+                $('#email').next().show();
+                error_email = true;
+            }
 
         })
     </script>
@@ -79,8 +104,8 @@
 					<li>
 						<label>用户名:</label>
 						<input type="text" name="user_name" id="user_name">
-						<span class="error_tip">提示信息</span>
-					</li>					
+						<span class="error_tip" >提示信息</span>
+					</li>
 					<li>
 						<label>密码:</label>
 						<input type="password" name="pwd" id="pwd">
@@ -98,14 +123,10 @@
 					</li>
 
 
-{#                        <label style="font-size: 15px">请输入验证码:</label>#}
-{#                        <input type="text" name="yzm_value" style="height:20px">#}
-{#                        <img src="/user/verify_code/?" class="img" id="img" >#}
-{#                        <span>点击图片刷新</span>#}
                     <li class="yzm">
                         <label>验证码</label>
-                        <img src="/user/verify_code/" class="fr">
-                        <input type="text" name="yzm_value" id="vyzm">
+                        <img src="/user/verify_code/?" class="fr" id="img" >
+                        <input type="text" name="yzm_value" id="vyzm" placeholder='点击图片刷新'>
                         <span class="error_tip">提示信息</span>
                     </li>
 
@@ -118,7 +139,7 @@
 					<li class="reg_sub">
 						<input type="submit" value="注 册" name="" id="submit">
 					</li>
-				</ul>				
+				</ul>
 				</form>
 			</div>
 
