@@ -7,8 +7,6 @@ $(function () {
     var area = $('#area');
     var user = $('#user');
 
-
-
     $('.addrlist').delegate('input','click',function () {
         var data = $(this).next().html();
         $('.current').html(data);
@@ -35,13 +33,7 @@ $(function () {
             });
 
 
-    $.get('/user/site_cur/',function (data) {
-        var data = data.data;
-        $('.current').html(data);
 
-
-
-    });
     $('.addrlist,.current').delegate('a','click',function (){
         cur_site_id = $('.current').find('span').html();
         $('#cur_site_id').val(cur_site_id);
@@ -58,6 +50,13 @@ $(function () {
     $('#site').append('<div class="form_group"> <input type="hidden" name="cur_site_id" id="cur_site_id" ></div>')
         $('#cur_site_id').val(cur_site_id);
         console.log(cur_site_id);
+
+    });
+     $.get('/user/site_cur/',function (data) {
+        var data = data.data;
+        $('.current').html(data);
+
+
 
     });
 

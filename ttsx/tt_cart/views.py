@@ -7,6 +7,7 @@ from tt_cart.models import *
 from tt_user.models import *
 from django.db.models import Q
 from tt_user.user_decorators import *
+
 # Create your views here.
 @is_login
 def good_data(request):
@@ -29,6 +30,7 @@ def good_data(request):
     cart.count = int(goods_num)
     cart.save()
     return JsonResponse({'cid':cart.id})
+
 @is_login
 def center(request):
     cart_list = CartInfo.objects.filter(user_id=1)

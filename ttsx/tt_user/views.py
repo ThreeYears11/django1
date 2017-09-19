@@ -31,28 +31,38 @@ def register(request):
 
 # 获取注册信息并保存到数据库
 def register1(request):
+    # 判断是否是在地址栏直接敲回车的ｇｅｔ请求，如果是就回到注册页
     if request.method == 'GET':
         return redirect('/user/register/')
+    # 取出注册提交的数据
     dict = request.POST
     uname = dict.get('user_name')
     upwd = dict.get('pwd')
     email = dict.get('email')
+    # 查询注册名是否已存在
     username = UserInfo.objects.filter(uname=uname)
+    # 查询注册邮箱是否已存在
     useremail = UserInfo.objects.filter(uemail=email)
+
+    # 名字和邮箱有一个存在的话,就注册不成功并返回注册页提示
     if username or useremail:
         if username:
             return render(request,'tt_user/register.html',{'is_name':1})
         else:
             return render(request, 'tt_user/register.html', {'is_email': 1})
+    # 数据库没有相同的用户名或者邮箱就注册成功并把数据保存在数据库里面
     else:
         s1 = sha1()
         s1.update(upwd.encode())
         sha_pwd = s1.hexdigest()
+        # 创建对象把数据保存在数据库里面
         userinfo = UserInfo()
         userinfo.uname = uname
         userinfo.upwd = sha_pwd
         userinfo.uemail = email
         userinfo.save()
+
+        # task模块里面的sendmail方法，用delay的话就可以把任务添加至队列实现异步，才能从队列里面调度出来执行，否则不能
         task.sendmail.delay(userinfo.id,email)
         # return redirect('/user/login/')
         return HttpResponse('用户注册成功，请到邮箱中激活')
@@ -115,7 +125,7 @@ def verify_code(request):
     #将内存中的图片数据返回给客户端，MIME类型为图片png
     return HttpResponse(buf.getvalue(), 'image/png')
 
-# 显示验证码
+# 显示验证码图片
 def yzm(request):
     return render(request,'tt_user/register.html')
 
@@ -131,28 +141,19 @@ def yzm2(request):
 # 注册时检查用户是否存在
 def check_user(request):
     name = request.GET.get('user_name')
-    psw = UserInfo.objects.filter(uname=name)
-    print(psw)
-    if psw:
-        print('yes')
+    username = UserInfo.objects.filter(uname=name)
+    if username:
         return JsonResponse({'check':'yes'})
     else:
-        print('no')
         return JsonResponse({'check':'no'})
 
 # 注册时检查邮箱是否存在
 def check_email(request):
     email = request.GET.get('email')
     count = UserInfo.objects.filter(uemail=email).count()
-    # count = UserInfo.objects.filter(uemail=email)
-    # print(count)
     if count:
-        print(count)
-        print('yes')
         return JsonResponse({'check':'yes'})
     else:
-        print(count)
-        print('no')
         return JsonResponse({'check':'no'})
 
 # 登录时检查用户是否存在
@@ -173,14 +174,14 @@ def check_login(request):
     else:
         return JsonResponse({'result':'0'})
 
-# 登录cookie
+# 登录cookie 暂时不知道哪里调用这个视图
 def login_cookie(request):
     if request.COOKIES['name']:
         return JsonResponse({'cookie':request.COOKIES['name']})
     else:
         return JsonResponse({'cookie':'no'})
 
-# 如果id没有的话就增加，否则就修改
+# 收货地址的数据提交的视图，如果id没有的话就增加，否则就修改
 def site(request):
     dict = request.POST
     name = dict.get('user_name')
@@ -188,8 +189,8 @@ def site(request):
     phone = dict.get('phone')
     id = dict.get('adid')
     cur_id = dict.get('cur_site_id')
+    # 如果没有id证明是添加收货地址
     if id=='':
-
         # 取出当前登录用户的cookie的名字
         uname = request.COOKIES.get('name')
         # 用名字取出对应的对象
@@ -202,13 +203,15 @@ def site(request):
         useraddr.user = userinfo[0]
         useraddr.save()
         return redirect('/user/show/')
-    # xiugai
+    # 如果有id就证明是修改地址
     else:
+        # 用id找出对应的地址对象并修改完保存
         useraddinfo = UserAddressInfo.objects.get(id=id)
         useraddinfo.uname = name
         useraddinfo.uaddress = site_area
         useraddinfo.uphone = phone
         useraddinfo.save()
+        # 如果当前地址和修改地址是同一个,就把地址存到session
         if id == cur_id:
             print('相等')
             print(id,cur_id)
@@ -346,10 +349,11 @@ def denglu(request):
 
 # 退出即清除session数据
 def logout(request):
-    del request.session['uid']
-    del request.session['uname']
-    del request.session['url_path']
-    del request.session['verifycode']
+    # del request.session['uid']
+    # del request.session['uname']
+    # del request.session['url_path']
+    # del request.session['verifycode']
+    request.session.flush()
     return redirect('/')
 
 # 当输入框失去焦点时判断验证码是否正确
