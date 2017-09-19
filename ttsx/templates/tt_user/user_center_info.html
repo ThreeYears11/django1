@@ -1,7 +1,9 @@
 {% extends 'base_top.html' %}
 {% block title %}
 	<title>天天生鲜-用户中心</title>
+{% block head %}
 
+{% endblock%}
 {% endblock title %}
 {% block body %}
 	<div class="search_bar clearfix" style="display: none">
@@ -24,67 +26,47 @@
 				<div class="info_con clearfix">
 				<h3 class="common_title2">基本信息</h3>
 						<ul class="user_info_list">
-							<li><span>用户名：</span>18210569700</li>
-							<li><span>联系方式：</span>18210569700</li>
-							<li><span>联系地址：</span>北京市昌平区</li>			
+							<li><span>用户名：</span>{{ uname }}</li>
+{#							<li><span>联系方式：</span>18210569700</li>#}
+							<li><span>联系邮箱：</span>{{ email }}</li>
 						</ul>
 				</div>
 				
 				<h3 class="common_title2">最近浏览</h3>
 				<div class="has_view_list">
 					<ul class="goods_type_list clearfix">
-				<li>
-					<a href="#"><img src="/static/images/goods/goods003.jpg"></a>
-					<h4><a href="#">大兴大棚草莓</a></h4>
-					<div class="operate">
-						<span class="prize">￥16.80</span>
-						<span class="unit">16.80/500g</span>
-						<a href="#" class="add_goods" title="加入购物车"></a>
-					</div>
-				</li>
+                    {% if not gList %}
+                        您最近没有浏览商品!
+                    {% else %}
 
+                        {% for good in gList %}
 				<li>
-					<a href="#"><img src="/static/images/goods/goods004.jpg"></a>
-					<h4><a href="#">吐鲁番梨光杏</a></h4>
+					<a href="/list{{ good.gtype.id }}/detail{{ good.id }}.html"><img src="/static/images/{{ good.gpic }}"></a>
+					<h4><a href="/list{{ good.gtype.id }}/detail{{ good.id }}.html">{{ good.gtitle }}</a></h4>
 					<div class="operate">
-						<span class="prize">￥5.50</span>
-						<span class="unit">5.50/500g</span>
-						<a href="#" class="add_goods" title="加入购物车"></a>
+						<span class="prize">￥{{ good.gprice }}</span>
+						<span class="unit">{{ good.gprice }}/{{ good.gunit }}</span>
+						<a href="javascript:;" class="add_goods" title="加入购物车"></a>
+                        <input type="hidden" value="{{ good.id }}">
 					</div>
 				</li>
-
-				<li>
-					<a href="#"><img src="/static/images/goods/goods005.jpg"></a>
-					<h4><a href="#">黄肉桃</a></h4>
-					<div class="operate">
-						<span class="prize">￥10.00</span>
-						<span class="unit">10.00/500g</span>
-						<a href="#" class="add_goods" title="加入购物车"></a>
-					</div>
-				</li>
-
-				<li>
-					<a href="#"><img src="/static/images/goods/goods006.jpg"></a>
-					<h4><a href="#">进口西梅</a></h4>
-					<div class="operate">
-						<span class="prize">￥28.80</span>
-						<span class="unit">28.8/500g</span>
-						<a href="#" class="add_goods" title="加入购物车"></a>
-					</div>
-				</li>
-
-				<li>
-					<a href="#"><img src="/static/images/goods/goods007.jpg"></a>
-					<h4><a href="#">香梨</a></h4>
-					<div class="operate">
-						<span class="prize">￥6.45</span>
-						<span class="unit">6.45/500g</span>
-						<a href="#" class="add_goods" title="加入购物车"></a>
-					</div>
-				</li>
+                        {% endfor %}
+                    {% endif %}
 			</ul>
 		</div>
 		</div>
 	</div>
+<script>
+        $(function(){
+            $('.add_goods').click(function () {
 
+                var gid = $(this).next().val();
+                console.log(gid);
+                $.get('/cart/good_data/', {'goods_id': gid, 'goods_num': 1 }, function (data) {
+                    console.log('ok');
+                });
+            });
+
+        });
+    </script>
 {% endblock body %}

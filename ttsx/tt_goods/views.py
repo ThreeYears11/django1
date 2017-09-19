@@ -94,6 +94,49 @@ def reset(request):
     return HttpResponseRedirect('/')
 
 goods_cookie_list = []
+# def detail(request, id, id2):
+#     # if id == "1":
+#     # 获取当前商品类别
+#     goods_class = TypeInfo.objects.get(id=int(id))
+#     new_goods = goods_class.goodsinfo_set.all().order_by("-id")[0:2]
+#     detail_goods = GoodsInfo.objects.get(id=id2)
+#     detail_goods.gclick += 1
+#     detail_goods.save()
+#     # 设置ｃｏｏｋｉｅ
+#     context = {
+#         "new_goods": new_goods,
+#         "detail_goods": detail_goods,
+#         "goods_class": goods_class,
+#     }
+#
+#     # flag = 1
+#     # cookies = None
+#     # goods_cookie_list = None
+#     # try:
+#     #     cookies = request.COOKIES["goods_id"]
+#     # # except Exception as result:
+#     # except:
+#     #     flag = 0
+#     #
+#     #
+#     # if(flag):
+#     #     goods_cookie_list = cookies
+#     #     print(goods_cookie_list)
+#     #
+#     #     while len(goods_cookie_list) <= 4:
+#     #         goods_cookie_list.append(id2)
+#     #
+#     #     goods_cookie_list.append(id2)
+#     #     goods_cookie_list.remove(goods_cookie_list[0])
+#     #     # print(goods_cookie_list)
+#     # else:
+#     #     goods_cookie_list=[id2,]
+#
+#     resposn = render(request, "tt_goods/detail.html", context)
+#     resposn.set_cookie("goods_id", id2)
+#
+#     return resposn
+
 def detail(request, id, id2):
     # if id == "1":
     # 获取当前商品类别
@@ -103,36 +146,21 @@ def detail(request, id, id2):
     detail_goods.gclick += 1
     detail_goods.save()
     # 设置ｃｏｏｋｉｅ
+    cookies = request.COOKIES.get("goods_zjll","")
+    if cookies:
+        list = cookies.split(",")
+        if id2 in list:
+            list.remove(id2)
+        list.insert(0,id2)
+        if len(list) > 5:
+            list.pop()
+    else:
+        list = id2
     context = {
         "new_goods": new_goods,
         "detail_goods": detail_goods,
         "goods_class": goods_class,
     }
-
-    # flag = 1
-    # cookies = None
-    # goods_cookie_list = None
-    # try:
-    #     cookies = request.COOKIES["goods_id"]
-    # # except Exception as result:
-    # except:
-    #     flag = 0
-    #
-    #
-    # if(flag):
-    #     goods_cookie_list = cookies
-    #     print(goods_cookie_list)
-    #
-    #     while len(goods_cookie_list) <= 4:
-    #         goods_cookie_list.append(id2)
-    #
-    #     goods_cookie_list.append(id2)
-    #     goods_cookie_list.remove(goods_cookie_list[0])
-    #     # print(goods_cookie_list)
-    # else:
-    #     goods_cookie_list=[id2,]
-
     resposn = render(request, "tt_goods/detail.html", context)
-    resposn.set_cookie("goods_id", id2)
-
+    resposn.set_cookie("goods_zjll",",".join(list))
     return resposn
