@@ -22,11 +22,6 @@
                 $('.login_btn').hide();
                 $('.login_info').children().html(data.name);
                 $('.login_info').show();
-
-                $.get("/cart/count/", function (data) {
-                    $("#show_count").html(data.count)
-                })
-
             });
         });
 

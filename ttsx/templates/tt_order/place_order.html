@@ -28,11 +28,18 @@
         <dl>
             <dt>寄送到：</dt>
             {% for foo in order.user.useraddressinfo_set.all %}
-                <dd><input type="radio" name="" checked="">{{ foo.uaddress }} （{{ foo.uname }} 收）{{ foo.uphone }}
-                </dd>
+                {% if forloop.counter == 1 %}
+                    <dd><input type="radio" name="xietaoshabi" checked='checked'>{{ foo.uaddress }} （{{ foo.uname }}
+                        收）{{ foo.uphone }}
+                    </dd>
+                {% else %}
+                    <dd><input type="radio" name="xietaoshabi">{{ foo.uaddress }} （{{ foo.uname }}
+                        收）{{ foo.uphone }}
+                    </dd>
+                {% endif %}
             {% endfor %}
         </dl>
-        <a href="user_center_site.html" class="edit_site">编辑收货地址</a>
+        <a href="/user/show/" class="edit_site">编辑收货地址</a>
     </div>
     <h3 class="common_title">支付方式</h3>
     <div class="common_list_con clearfix">
