@@ -29,7 +29,10 @@ def good_data(request):
     cart.goods = good
     cart.count = int(goods_num)
     cart.save()
-    return JsonResponse({'cid':cart.id})
+    if request.is_ajax():
+        return JsonResponse({'cid':cart.id})
+    else:
+        return redirect('/cart/center/')
 
 @is_login
 def center(request):

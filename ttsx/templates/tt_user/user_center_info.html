@@ -41,8 +41,8 @@
 
                         {% for good in gList %}
 				<li>
-					<a href="/list{{ good.gtype.id }}/detail{{ good.id }}.html"><img src="/static/images/{{ good.gpic }}"></a>
-					<h4><a href="/list{{ good.gtype.id }}/detail{{ good.id }}.html">{{ good.gtitle }}</a></h4>
+					<a href="/detail{{ good.gtype.id }}/{{ good.id }}"><img src="/static/images/{{ good.gpic }}"></a>
+					<h4><a href="/detail{{ good.gtype.id }}/{{ good.id }}">{{ good.gtitle }}</a></h4>
 					<div class="operate">
 						<span class="prize">￥{{ good.gprice }}</span>
 						<span class="unit">{{ good.gprice }}/{{ good.gunit }}</span>

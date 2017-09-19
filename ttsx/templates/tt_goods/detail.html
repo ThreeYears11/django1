@@ -197,8 +197,8 @@
                     $.get('/cart/good_data',{'goods_num':goods_num,'goods_id':'{{detail_goods.id}}'},function (data) {
 {#                            $("#show_count").html(data.count)#}
                          $.get("/cart/count/",function (data) {
-                $("#show_count").html(data.count)
-            })
+                             $("#show_count").html(data.count)
+                         })
                         if (data.login == 1) {
 
                     location.href = '/user/login/'
