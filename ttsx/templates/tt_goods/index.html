@@ -11,21 +11,24 @@
     <script>
         $(function () {
             var user = $('.login_info');
-            if(user.children().html()==''){
+            if (user.children().html() == '') {
                 user.hide();
                 $('.login_btn').show();
-            }else {
+            } else {
                 user.show();
                 $('.login_btn').hide();
             }
             $.get('/user/show_user/', function (data) {
-            $('.login_btn').hide();
-            $('.login_info').children().html(data.name);
-            $('.login_info').show();
+                $('.login_btn').hide();
+                $('.login_info').children().html(data.name);
+                $('.login_info').show();
 
-            })
+                $.get("/cart/count/", function (data) {
+                    $("#show_count").html(data.count)
+                })
 
-        })
+            });
+        });
 
 
     </script>
@@ -77,11 +80,13 @@
 			<h3 class="fl" id="model01">新鲜水果</h3>
 			<div class="subtitle fl">
 				<span>|</span>
-				<a href="#">鲜芒</a>
-				<a href="#">加州提子</a>
-				<a href="#">亚马逊牛油果</a>
+
+
+                {% for i in  goods_list1_hot%}
+                    <a href="/detail1/{{ i.id }}">{{ i.gtitle }}</a>
+                {% endfor %}
 			</div>
-			<a href="/list1/" class="goods_more fr" id="fruit_more">查看更多 ></a>
+			<a href="/list1/1_1" class="goods_more fr" id="fruit_more">查看更多 ></a>
 		</div>
 
 		<div class="goods_con clearfix">
@@ -89,9 +94,9 @@
 			<ul class="goods_list fl">
 
                 {% for i in goods_list1 %}
-                <li>
-					<h4><a href="/list1/detail{{ i.id }}.html">{{ i.gtitle }}</a></h4>
-					<a href="/list1/detail{{ i.id }}.html"><img src="/static/images/{{ i.gpic }}"></a>
+                    <li>
+					<h4><a href="/detail1/{{ i.id }}">{{ i.gtitle }}</a></h4>
+					<a href="/detail1/{{ i.id }}"><img src="/static/images/{{ i.gpic }}"></a>
 					<div class="prize">¥ {{ i.gprice }}</div>
 				</li>
                 {% endfor %}
@@ -105,10 +110,11 @@
 			<h3 class="fl" id="model02">海鲜水产</h3>
 			<div class="subtitle fl">
 				<span>|</span>
-				<a href="#">河虾</a>
-				<a href="#">扇贝</a>
+				{% for i in  goods_list2_hot%}
+                    <a href="/detail1/{{ i.id }}">{{ i.gtitle }}</a>
+                {% endfor %}
 			</div>
-			<a href="/list2/" class="goods_more fr">查看更多 ></a>
+			<a href="/list2/1_1" class="goods_more fr">查看更多 ></a>
 		</div>
 
 		<div class="goods_con clearfix">
@@ -117,8 +123,8 @@
 
                 {% for i in goods_list2 %}
                 <li>
-					<h4><a href="/list2/detail{{ i.id }}.html">{{ i.gtitle }}</a></h4>
-					<a href="/list2/detail{{ i.id }}.html"><img src="/static/images/{{ i.gpic }}"></a>
+					<h4><a href="/detail2/{{ i.id }}">{{ i.gtitle }}</a></h4>
+					<a href="/detail2/{{ i.id }}"><img src="/static/images/{{ i.gpic }}"></a>
 					<div class="prize">¥ {{ i.gprice }}</div>
 				</li>
                 {% endfor %}
@@ -132,11 +138,11 @@
 			<h3 class="fl" id="model03">猪牛羊肉</h3>
 			<div class="subtitle fl">
 				<span>|</span>
-				<a href="#">鲜芒</a>
-				<a href="#">加州提子</a>
-				<a href="#">亚马逊牛油果</a>
+				{% for i in  goods_list3_hot%}
+                    <a href="/detail1/{{ i.id }}">{{ i.gtitle }}</a>
+                {% endfor %}
 			</div>
-			<a href="/list3/" class="goods_more fr">查看更多 ></a>
+			<a href="/list3/1_1" class="goods_more fr">查看更多 ></a>
 		</div>
 
 		<div class="goods_con clearfix">
@@ -145,8 +151,8 @@
 
                 {% for i in goods_list3 %}
                 <li>
-					<h4><a href="/list3/detail{{ i.id }}.html">{{ i.gtitle }}</a></h4>
-					<a href="/list3/detail{{ i.id }}.html"><img src="/static/images/{{ i.gpic }}"></a>
+					<h4><a href="/detail3/{{ i.id }}">{{ i.gtitle }}</a></h4>
+					<a href="/detail3/{{ i.id }}"><img src="/static/images/{{ i.gpic }}"></a>
 					<div class="prize">¥ {{ i.gprice }}</div>
 				</li>
                 {% endfor %}
@@ -160,11 +166,11 @@
 			<h3 class="fl" id="model04">禽类蛋品</h3>
 			<div class="subtitle fl">
 				<span>|</span>
-				<a href="#">鲜芒</a>
-				<a href="#">加州提子</a>
-				<a href="#">亚马逊牛油果</a>
+				{% for i in  goods_list4_hot%}
+                    <a href="/detail1/{{ i.id }}">{{ i.gtitle }}</a>
+                {% endfor %}
 			</div>
-			<a href="/list4/" class="goods_more fr">查看更多 ></a>
+			<a href="/list4/1_1" class="goods_more fr">查看更多 ></a>
 		</div>
 
 		<div class="goods_con clearfix">
@@ -173,8 +179,8 @@
 
                 {% for i in goods_list4 %}
                 <li>
-					<h4><a href="/list4/detail{{ i.id }}.html">{{ i.gtitle }}</a></h4>
-					<a href="/list4/detail{{ i.id }}.html"><img src="/static/images/{{ i.gpic }}"></a>
+					<h4><a href="/detail4/{{ i.id }}">{{ i.gtitle }}</a></h4>
+					<a href="/detail4/{{ i.id }}"><img src="/static/images/{{ i.gpic }}"></a>
 					<div class="prize">¥ {{ i.gprice }}</div>
 				</li>
                 {% endfor %}
@@ -188,11 +194,11 @@
 			<h3 class="fl" id="model05">新鲜蔬菜</h3>
 			<div class="subtitle fl">
 				<span>|</span>
-				<a href="#">鲜芒</a>
-				<a href="#">加州提子</a>
-				<a href="#">亚马逊牛油果</a>
+				{% for i in  goods_list5_hot%}
+                    <a href="/detail1/{{ i.id }}">{{ i.gtitle }}</a>
+                {% endfor %}
 			</div>
-			<a href="/list5/" class="goods_more fr">查看更多 ></a>
+			<a href="/list5/1_1" class="goods_more fr">查看更多 ></a>
 		</div>
 
 		<div class="goods_con clearfix">
@@ -201,8 +207,8 @@
 
                 {% for i in goods_list5 %}
                 <li>
-					<h4><a href="/list5/detail{{ i.id }}.html">{{ i.gtitle }}</a></h4>
-					<a href="/list5/detail{{ i.id }}.html"><img src="/static/images/{{ i.gpic }}"></a>
+					<h4><a href="/detail5/{{ i.id }}">{{ i.gtitle }}</a></h4>
+					<a href="/detail5/{{ i.id }}"><img src="/static/images/{{ i.gpic }}"></a>
 					<div class="prize">¥ {{ i.gprice }}</div>
 				</li>
                 {% endfor %}
@@ -216,11 +222,11 @@
 			<h3 class="fl" id="model06">速冻食品</h3>
 			<div class="subtitle fl">
 				<span>|</span>
-				<a href="#">鲜芒</a>
-				<a href="#">加州提子</a>
-				<a href="#">亚马逊牛油果</a>
+				{% for i in  goods_list6_hot%}
+                    <a href="/detail1/{{ i.id }}">{{ i.gtitle }}</a>
+                {% endfor %}
 			</div>
-			<a href="/list6/" class="goods_more fr">查看更多 ></a>
+			<a href="/list6/1_1" class="goods_more fr">查看更多 ></a>
 		</div>
 
 		<div class="goods_con clearfix">
@@ -229,8 +235,8 @@
 
                 {% for i in goods_list6 %}
                 <li>
-					<h4><a href="/list6/detail{{ i.id }}.html">{{ i.gtitle }}</a></h4>
-					<a href="/list6/detail{{ i.id }}.html"><img src="/static/images/{{ i.gpic }}"></a>
+					<h4><a href="/detail6/{{ i.id }}">{{ i.gtitle }}</a></h4>
+					<a href="/detail6/{{ i.id }}"><img src="/static/images/{{ i.gpic }}"></a>
 					<div class="prize">¥ {{ i.gprice }}</div>
 				</li>
                 {% endfor %}

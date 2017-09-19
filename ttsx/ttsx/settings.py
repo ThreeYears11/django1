@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'tt_goods',
     'tinymce',
     'djcelery',
+    'haystack',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -86,8 +87,8 @@ DATABASES = {
         'HOST': 'localhost',
         'PORT': '3306',
         'USER': 'root',
-
         'PASSWORD': 'mysql',
+        # 'PASSWORD': 'mysql',
     }
 }
 
@@ -144,3 +145,14 @@ import djcelery
 djcelery.setup_loader()
 BROKER_URL = 'redis://127.0.0.1:6379/2'
 CELERY_IMPORTS = ('tt_user.task')
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        #使用whoosh引擎
+        'ENGINE': 'haystack.backends.whoosh_cn_backend.WhooshEngine',
+        #索引文件路径
+        'PATH': os.path.join(BASE_DIR, 'whoosh_index'),
+    }
+}
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+HAYSTACK_SEARCH_RESULTS_PER_PAGE = 10

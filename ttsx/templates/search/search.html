@@ -1,0 +1,116 @@
+
+{% extends "base_goods.html" %}
+
+
+{% block title %}
+    <script src="/static/js/jquery-1.12.4.min.js"></script>
+    <script src="/static/js/register.js"></script>
+    <script>
+        $(function(){
+            $(".add_goods").click(function () {
+                var goods_id = $(this).attr("value");
+                $.get("/cart/good_data/",{"goods_id":goods_id,"goods_num":"1"});
+
+            });
+
+            $(".new_goods").parent().hide();
+            $.get("/cart/count/",function (data) {
+                $("#show_count").html(data.count)
+            })
+
+        });
+
+    </script>
+
+{% endblock title %}
+
+{% block body %}
+
+
+
+    <div class="navbar_con">
+        <div class="navbar clearfix">
+            <div class="subnav_con fl">
+                <h1>全部商品分类</h1>
+                <span></span>
+                <ul class="subnav">
+                    <li><a href="/list1/１_1" class="fruit">新鲜水果</a></li>
+                    <li><a href="/list2/１_1" class="seafood">海鲜水产</a></li>
+                    <li><a href="/list3/１_1" class="meet">猪牛羊肉</a></li>
+                    <li><a href="/list4/１_1" class="egg">禽类蛋品</a></li>
+                    <li><a href="/list5/１_1" class="vegetables">新鲜蔬菜</a></li>
+                    <li><a href="/list6/１_1" class="ice">速冻食品</a></li>
+                </ul>
+            </div>
+            <ul class="navlist fl">
+                <li><a href="/">首页</a></li>
+                <li class="interval">|</li>
+                <li><a href="">手机生鲜</a></li>
+                <li class="interval">|</li>
+                <li><a href="">抽奖</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="breadcrumb">
+        <a href="/reset/">全部分类</a>
+        <a href="javascript:;">>>>{{ query }}</a>
+    </div>
+    <div class="main_wrap clearfix">
+        <div class="l_wrap fl clearfix">
+            <div class="new_goods">
+{#                <h3>新品推荐</h3>#}
+                <ul>
+
+
+
+                </ul>
+            </div>
+        </div>
+
+
+        <div class="r_wrap fr clearfix">
+
+            <ul class="goods_type_list clearfix">
+
+                {% for i in page %}
+                    <li>
+                        <a href="/detail{{i.object.gtype_id}}/{{ i.object.id }}"><img src="/static/images/{{ i.object.gpic }}"></a>
+                        <h4><a href="/detail{{i.object.gtype_id}}/{{ i.object.id }}">{{ i.object.gtitle }}</a></h4>
+                        <div class="operate">
+                            <span class="prize">￥{{ i.object.gprice }}</span>
+                            <span class="unit">{{ i.object.gprice }}/500g</span>
+                            <a href="#" class="add_goods" value="{{ i.object.id }}" title="加入购物车"></a>
+                        </div>
+                    </li>
+
+                {% endfor %}
+
+            </ul>
+
+
+            <div class="pagenation">
+
+
+                {% if page.has_previous %}
+                <a href="/search/?q={{ query }}&page=1">首页</a>
+                <a href="/search/?q={{ query }}&page={{ page.number|add:-1 }}">上一页</a>
+                {% endif %}
+
+                {% for i in paginator.page_range %}
+                {% if i == page.number %}
+            <a href="#" class="active">{{ i }}</a>
+            {% else %}
+            <a href="/search/?q={{ query }}&page={{ i }}">{{ i }}</a>
+            {% endif %}
+        {% endfor %}
+
+            {% if page.has_next %}
+            <a href="/search/?q={{ query }}&page={{ page.number|add:1 }}">下一页</a>
+            <a href="/search/?q={{ query }}&page={{ paginator.num_pages }}">末页</a>
+            {% endif %}
+            </div>
+        </div>
+    </div>
+    <script></script>
+{% endblock body %}
