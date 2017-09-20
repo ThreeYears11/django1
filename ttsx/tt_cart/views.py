@@ -67,6 +67,7 @@ def delete_data(request):
         cart.delete()
     return HttpResponse('ok')
 
+@is_login
 def count(request):
     c = CartInfo.objects.filter(user_id=request.session.get('uid')).count()
     return JsonResponse({'count':c})

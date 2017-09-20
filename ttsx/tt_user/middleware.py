@@ -47,7 +47,8 @@ class GetPathMiddleware():
             '/user/add_addr/',
             '/user/current/',
             '/user/site_cur/',
-            '/cart/goods_data/',
+            '/cart/good_data/',
+            '/cart/count/',
 
         ]
         if request.path not in no_path and 'active' not in request.path:

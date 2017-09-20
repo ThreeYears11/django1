@@ -191,8 +191,11 @@ def site(request):
     cur_id = dict.get('cur_site_id')
     # 如果没有id证明是添加收货地址
     if id=='':
-        # 取出当前登录用户的cookie的名字
-        uname = request.COOKIES.get('name')
+        # 不能用cookies，因为如果用户不勾上记住用户名，cookies是没有名字的
+        # 这时就取不到数据库里面的数据了取出当前登录用户的cookie的名字
+        # uname = request.COOKIES.get('name')
+
+        uname = request.session.get('uname')
         # 用名字取出对应的对象
         userinfo = UserInfo.objects.filter(uname=uname)
         useraddr = UserAddressInfo()
@@ -211,18 +214,20 @@ def site(request):
         useraddinfo.uaddress = site_area
         useraddinfo.uphone = phone
         useraddinfo.save()
-        # 如果当前地址和修改地址是同一个,就把地址存到session
+        # 如果当前地址和修改地址是同一个,就把修改好的地址存到session
+        print(id,cur_id)
+        print('相等吗')
         if id == cur_id:
-            print('相等')
-            print(id,cur_id)
+            # 把字符串拼接成html格式存在session
             data = '<span style="display: none">%s</span>&nbsp;%s&nbsp;&nbsp;&nbsp;(%s&nbsp;收)&nbsp;&nbsp;&nbsp;%s&nbsp;&nbsp;&nbsp;<a href="#" class="a">修改</a><label></label>' % (
             id,site_area, name, phone)
             request.session['data'] = data
+            print(data)
+            print('session')
             return redirect('/user/show/')
 
         else:
-            print('不相等')
-            print(id,cur_id)
+            # 如果存的不是同一个ｉｄ，session的值则不变
             return redirect('/user/show/')
 
 # 显示用户中心
@@ -279,7 +284,10 @@ def order(request, pIndex):
 
 # 把登录的用户名对应的所有地址添加到已保存地址并显示
 def add_addr(request):
-    name = request.COOKIES.get('name')
+    # 不能用cookies，因为如果用户不勾上记住用户名，cookies是没有名字的
+    # 这时就取不到数据库里面的数据了取出当前登录用户的cookie的名字
+    # name = request.COOKIES.get('name')
+    name = request.session.get('uname')
     useraddr = UserAddressInfo.objects.filter(user__uname=name)
     list = []
     for addr in useraddr:

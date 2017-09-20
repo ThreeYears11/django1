@@ -6,6 +6,7 @@ $(function () {
     var num = $('#num');
     var area = $('#area');
     var user = $('#user');
+    var cur_site_id = $('.current').find('span').html();
 
     $('.addrlist').delegate('input','click',function () {
         var data = $(this).next().html();
@@ -38,18 +39,19 @@ $(function () {
         cur_site_id = $('.current').find('span').html();
         $('#cur_site_id').val(cur_site_id);
         var ad_id = $(this).parent().find('span').html();
-        console.log(ad_id);
         $.get('/user/xiugai/',{'ad_id':ad_id}, function (data) {
+            cur_site_id = $('.current').find('span').html();
             $('#user').val(data.uuname);
             $('#area').val(data.uaddress);
             $('#num').val(data.uphone);
-            $('#adid').val(ad_id)
+            $('#adid').val(ad_id);
+            $('#cur_site_id').val(cur_site_id);
 
         });
-     var cur_site_id = $('.current').find('span').html();
-    $('#site').append('<div class="form_group"> <input type="hidden" name="cur_site_id" id="cur_site_id" ></div>')
+
+    // $('#site').append('<div class="form_group"> <input type="hidden" name="cur_site_id" id="cur_site_id" ></div>');
         $('#cur_site_id').val(cur_site_id);
-        console.log(cur_site_id);
+
 
     });
      $.get('/user/site_cur/',function (data) {
