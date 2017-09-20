@@ -7,55 +7,44 @@
 	<script type="text/javascript" src="/static/js/register.js"></script>
     <script>
         $(function () {
+            // 验证码的点击图片更换
             $('#img').css('cursor','pointer').click(function () {
                 $('#img').prop('src',$('#img').prop('src')+1)
             });
 
-            var sub = true;
-            var num = 1;
+
+            // 用户名输入框失去焦点时
             $('#user_name').blur(function () {
+                // 取出用户名
                 var name = $('#user_name').val();
+                // 把用户名传到视图中
                 $.get('/user/check_user/',{'user_name':name},function (data) {
+                    // 如果已存在则提示已存在,
                     if(data.check=='yes'){
                         $('#user_name').next().html('用户名已存在');
 			            $('#user_name').next().show();
-			            sub = false;
-                    }else {
-                        sub = true;
+
                     }
                });
             });
-
+            // 邮箱输入框失去焦点时
             $('#email').blur(function () {
+                // 取出邮箱
                 var email = $('#email').val();
+                // 把邮箱传到视图中
                 $.get('/user/check_email/',{'email':email},function (data) {
+                    // 如果已存在则提示已存在,
                     if(data.check=='yes'){
                         $('#email').next().html('邮箱已存在');
 			            $('#email').next().show();
-			            num = 0;
-                    }else{
-                        num = 1;
+
                     }
 
 
                 });
             });
 
-            $('#submit').click(function () {
-{#            $('.myform').submit(function() {#}
-                if(sub==false){
-                    $('#user_name').next().html('用户名已存在');
-                    $('#user_name').next().show();
-                    error_name = true;
-                }
-                if(num==0){
-                    $('#email').next().html('邮箱已存在');
-                    $('#email').next().show();
-                    error_email = true;
 
-                }
-
-            });
             $('#user_name').focus(function () {
                 $('#user_name').next().hide();
             });
@@ -69,11 +58,13 @@
                 $('#vyzm').next().hide();
             });
 
+            // 如果用户名存在视图跳转回来时显示
             if({{ is_name|default:0 }}==1){
                 $('#user_name').next().html('用户名已存在');
                 $('#user_name').next().show();
                 error_name = true;
             }
+            // 如果邮箱存在也在视图跳转回来时显示
             if({{ is_email|default:0 }}==1){
                 $('#email').next().html('邮箱已存在');
                 $('#email').next().show();
