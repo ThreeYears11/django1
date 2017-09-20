@@ -191,8 +191,11 @@ def site(request):
     cur_id = dict.get('cur_site_id')
     # 如果没有id证明是添加收货地址
     if id=='':
-        # 取出当前登录用户的cookie的名字
-        uname = request.COOKIES.get('name')
+        # 不能用cookies，因为如果用户不勾上记住用户名，cookies是没有名字的
+        # 这时就取不到数据库里面的数据了取出当前登录用户的cookie的名字
+        # uname = request.COOKIES.get('name')
+
+        uname = request.session.get('uname')
         # 用名字取出对应的对象
         userinfo = UserInfo.objects.filter(uname=uname)
         useraddr = UserAddressInfo()
@@ -211,18 +214,20 @@ def site(request):
         useraddinfo.uaddress = site_area
         useraddinfo.uphone = phone
         useraddinfo.save()
-        # 如果当前地址和修改地址是同一个,就把地址存到session
+        # 如果当前地址和修改地址是同一个,就把修改好的地址存到session
+        print(id,cur_id)
+        print('相等吗')
         if id == cur_id:
-            print('相等')
-            print(id,cur_id)
+            # 把字符串拼接成html格式存在session
             data = '<span style="display: none">%s</span>&nbsp;%s&nbsp;&nbsp;&nbsp;(%s&nbsp;收)&nbsp;&nbsp;&nbsp;%s&nbsp;&nbsp;&nbsp;<a href="#" class="a">修改</a><label></label>' % (
             id,site_area, name, phone)
             request.session['data'] = data
+            print(data)
+            print('session')
             return redirect('/user/show/')
 
         else:
-            print('不相等')
-            print(id,cur_id)
+            # 如果存的不是同一个ｉｄ，session的值则不变
             return redirect('/user/show/')
 
 # 显示用户中心
@@ -279,7 +284,10 @@ def order(request, pIndex):
 
 # 把登录的用户名对应的所有地址添加到已保存地址并显示
 def add_addr(request):
-    name = request.COOKIES.get('name')
+    # 不能用cookies，因为如果用户不勾上记住用户名，cookies是没有名字的
+    # 这时就取不到数据库里面的数据了取出当前登录用户的cookie的名字
+    # name = request.COOKIES.get('name')
+    name = request.session.get('uname')
     useraddr = UserAddressInfo.objects.filter(user__uname=name)
     list = []
     for addr in useraddr:
@@ -293,7 +301,7 @@ def current(request):
     request.session.set_expiry(None)
     return JsonResponse({'isok':'true'})
 
-# 从session取出当前地址显示
+# 从session取出地址显示为当前地址
 def site_cur(request):
     data = request.session.get('data')
     return JsonResponse({'data':data})
@@ -301,58 +309,69 @@ def site_cur(request):
 # 修改用户地址
 def xiugai(request):
     userad = request.GET
+    # 接收用户传过来的当前点击修改的id
     ad_id = userad.get('ad_id')
+    # 查找出对应id的地址对象
     useraddinfo = UserAddressInfo.objects.get(id=ad_id)
+    # 把此对象的值赋给变量
     uname = useraddinfo.uname
     uaddress = useraddinfo.uaddress
     uphone = useraddinfo.uphone
+    # 把从数据库获取出来的值通过json传送过去
     return  JsonResponse({'uuname':uname,'uaddress':uaddress,'uphone':uphone})
 
 # 登录页面
 def denglu(request):
+    # 如果在地址栏敲回车的get请求，就重定向到登录页
     if request.method == "GET":
         return redirect('/user/login/')
+    # 接收从login页面点击登录提交过来的用户名和密码
     dict = request.POST
     name = dict.get('username')
     pwd = dict.get('pwd')
-    remeber = dict.get('remeber','0')
-    yzm = dict.get('yzm_value')
+    remeber = dict.get('remeber','0')# 客户选中记住用户就是1,否则就是默认值0
+    yzm = dict.get('yzm_value')# 接收用户在输入框中输入的验证码
+
+    # 上下文拼接,error 都默认值为0
     context = { 'name': name, 'upwd': pwd, 'uname_error': 0, 'upwd_error': 0, 'yzm_error':0}
+
+    # 如果用户输入的验证码不等于session存着的验证码，表示用户输入验证码有误
     if yzm != request.session['verifycode']:
-        context['yzm_error']=1
-        return render(request,'tt_user/login.html',context)
-    user = UserInfo.objects.filter(uname=name)
-    if user:
-        s1 = sha1()
+        context['yzm_error']=1# 给上下文同样的键赋值为１
+        return render(request,'tt_user/login.html',context)# 返回登录页面
+    user = UserInfo.objects.filter(uname=name)# 验证码正确从数据库中查找对应用户名
+    if user:  # 如果此用户名已注册
+        s1 = sha1()# 那么就对用户输入的密码进行加密
         s1.update(pwd.encode('utf-8'))
         spwd = s1.hexdigest()
-        if spwd == user[0].upwd:
-            if user[0].isActive:
-                response = redirect(request.session.get('url_path','/'))
-                # 记住用户名
-                if remeber == '1':
-                    response.set_cookie('name',name,expires=14*24*60*60)
-                else:
-                    response.set_cookie('name','',expires=-1)
+        if spwd == user[0].upwd:# 用户输入的密码如果正确
+            if user[0].isActive:# 如果此用户已激活
 
+                # 则重定向到用户上次点击的页面
+                # redirect是HttpResponseRedirect的简写因为继承与类HttpResponse所以返回的也是response对象
+                response = redirect(request.session.get('url_path','/'))
+                # 记住用户名,如果用户勾上记住用户名
+                if remeber == '1':
+                    # 则把此用户名存在cookie中
+                    response.set_cookie('name',name,expires=14*24*60*60)
+                else:  # 否则给cookie同样的键附上一个空字符串，而且过期时间设为负值，则浏览器马上删除cookie
+                    response.set_cookie('name','',expires=-1)
+                # 登录成功把用户的id和名字存在session中
                 request.session['uid'] = user[0].id
                 request.session['uname'] = name
                 return response
-            else:
+            else:  # 如果此用户没激活则给用户显示如下文字
                 return HttpResponse('账户未激活，请前往注册邮箱激活')
-        else:
+        else:  # 如果用户密码不正确则返回把键的值改为１并回到登录页
             context['upwd_error'] = 1
             return render(request,'tt_user/login.html',context)
-    else:
+    else:  # 如果此用户名没有注册则把键的值改为１并回到登录页
         context['uname_error'] = 1
         return render(request,'tt_user/login.html',context)
 
 # 退出即清除session数据
 def logout(request):
-    # del request.session['uid']
-    # del request.session['uname']
-    # del request.session['url_path']
-    # del request.session['verifycode']
+    # 清除会话数据，在存储中删除会话的整条数据
     request.session.flush()
     return redirect('/')
 

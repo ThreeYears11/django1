@@ -11,7 +11,7 @@
                 $('#login_yzm_img').prop('src',$('#login_yzm_img').prop('src')+1)
             });
 
-
+            // 如果密码错误则跳转回来时给提示密码错误
             if({{ upwd_error|default:0 }}==1){
                 $('#pwd').next().html('密码错误').show();
                 error_password = true;
@@ -29,10 +29,12 @@
 
             $('#login_yzm_img').next().hide();
 
+            // 如果用户名不存在则跳转回来时给提示用户名错误
             if({{ uname_error|default:0 }}==1){
                 $('#username').next().html('用户名错误').show();
                 error_name = true;
             }
+            // 如果验证码错误则跳转回来时给提示验证码错误
             if({{ yzm_error|default:0 }}==1){
                 $('#login_yzm_img').next().html('验证码错误').show();
                 error_yzm = true;
